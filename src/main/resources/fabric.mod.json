@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "servermoneyfabric",
+  "version": "${version}",
+  "name": "ServerMoneyFabric",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/falko/ServerMoneyFabric"
+  },
+  "license": "MIT",
+  "icon": "assets/servermoneyfabric/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.skippyall.servermoney.ServerMoney"
+    ],
+    "cardinal-components": [
+      "io.github.skippyall.servermoney.money.MoneyStorage"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  },
+  "custom": {
+    "cardinal-components": [
+      "servermoney:money"
+    ]
+  }
+}
