@@ -1,0 +1,6 @@
+{
+  "package": "io.github.skippyall.servermoney.mixins",
+  "mixins": [
+    "Generic3x3ContainerScreenHandlerAccessor"
+  ]
+}

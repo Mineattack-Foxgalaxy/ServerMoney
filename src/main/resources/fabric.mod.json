@@ -16,7 +16,8 @@
       "io.github.skippyall.servermoney.ServerMoney"
     ],
     "cardinal-components": [
-      "io.github.skippyall.servermoney.money.MoneyStorage"
+      "io.github.skippyall.servermoney.shop.ShopCreateStorage",
+      "io.github.skippyall.servermoney.shop.ShopStorage"
     ]
   },
   "depends": {
@@ -26,7 +27,11 @@
   },
   "custom": {
     "cardinal-components": [
-      "servermoney:money"
+      "servermoney:shop",
+      "servermoney:shopcreate"
     ]
-  }
+  },
+  "mixins": [
+    "servermoney.mixins.json"
+  ]
 }
