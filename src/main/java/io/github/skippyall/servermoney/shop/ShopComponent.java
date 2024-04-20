@@ -19,14 +19,14 @@ public class ShopComponent implements Component {
     public UUID shopOwner;
     public Item item;
     public int amount;
-    public long price;
+    public double price;
 
     @Override
     public void readFromNbt(NbtCompound tag) {
         isShop = tag.getBoolean(IS_SHOP_KEY);
         if(isShop) {
             shopOwner = tag.getUuid(OWNER_KEY);
-            price = tag.getLong(PRICE_KEY);
+            price = tag.getDouble(PRICE_KEY);
             item = Registries.ITEM.get(Identifier.tryParse(tag.getString(ITEM_KEY)));
             amount = tag.getInt(AMOUNT_KEY);
         }
@@ -37,17 +37,9 @@ public class ShopComponent implements Component {
         tag.putBoolean(IS_SHOP_KEY, isShop);
         if(isShop) {
             tag.putUuid(OWNER_KEY, shopOwner);
-            tag.putLong(PRICE_KEY, price);
+            tag.putDouble(PRICE_KEY, price);
             tag.putString(ITEM_KEY, Registries.ITEM.getId(item).toString());
             tag.putInt(AMOUNT_KEY, amount);
         }
-    }
-
-    public void copyFrom(ShopComponent component) {
-        this.isShop = component.isShop;
-        this.shopOwner = component.shopOwner;
-        this.amount = component.amount;
-        this.item = component.item;
-        this.price = component.price;
     }
 }

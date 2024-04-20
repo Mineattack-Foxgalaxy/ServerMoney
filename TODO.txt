@@ -1,0 +1,13 @@
+- Owner Features:
+    - Preis und Menge ändern
+    - Statistik
+    - Geschenke nach mehrfachen Kauf
+    - Shop close
+
+- Shop Schutz
+    - Trichter und Trichterloren Schutz
+
+- Konfiguration
+
+- Testen
+    - Abbauschutz

@@ -16,7 +16,7 @@
       "io.github.skippyall.servermoney.ServerMoney"
     ],
     "cardinal-components": [
-      "io.github.skippyall.servermoney.shop.ShopCreateStorage",
+      "io.github.skippyall.servermoney.shop.modification.ShopModificationStorage",
       "io.github.skippyall.servermoney.shop.ShopStorage"
     ]
   },

@@ -1,0 +1,12 @@
+{
+  "servermoney.midnightconfig.title": "Server Money Configuration",
+  "servermoney.command.money.give": "You gave %s %s%s.",
+  "servermoney.command.money.set": "You set %s's money to %s%s.",
+  "servermoney.command.money.query": "You have %s%s.",
+  "servermoney.command.money.query.others": "%s has %s%s.",
+  "servermoney.command.money.pay.sender": "You paid %s %s%s.",
+  "servermoney.command.money.pay.receiver": "%s paid you %s%s.",
+  "servermoney.command.money.pay.error": "Not enough money: You have %s%s, but requested %s%s.",
+  "servermoney.command.shop.create": "Creating a shop, selling %s %s for %s%s.",
+  "servermoney.input.paybutton.confirm": "Do you want to pay %s %s%s to press this button? Click here to confirm."
+}
