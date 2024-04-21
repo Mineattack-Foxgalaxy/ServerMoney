@@ -27,7 +27,7 @@ public class PayButtonBlock extends ButtonBlock implements BlockEntityProvider {
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
+    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
         if (!state.get(POWERED)) {
             if(!world.isClient() && world.getBlockEntity(pos) instanceof PayButtonBlockEntity pbbe) {
                 Input.confirmPayButton(player, pbbe.getOwner(), pbbe.getAmount(), pos, world);
@@ -38,7 +38,7 @@ public class PayButtonBlock extends ButtonBlock implements BlockEntityProvider {
     }
 
     public void onPay(BlockState state, World world, BlockPos pos, PlayerEntity player) {
-        super.onUse(state, world, pos, player, Hand.MAIN_HAND, null);
+        super.onUse(state, world, pos, player, null);
     }
 
     @Override

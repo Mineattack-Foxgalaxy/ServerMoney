@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -12,11 +13,11 @@ import net.minecraft.world.World;
 import net.minecraft.world.timer.Timer;
 import net.minecraft.world.timer.TimerCallback;
 
-public record ShopResendCallback(BlockState state, BlockPos pos, World world) implements TimerCallback<MinecraftServer> {
+public record ShopResendCallback(BlockState state, BlockPos pos, RegistryKey<World> world) implements TimerCallback<MinecraftServer> {
     public static long counter = 0;
     @Override
     public void call(MinecraftServer server, Timer<MinecraftServer> events, long time) {
-        world.getServer().getPlayerManager().sendToDimension(new BlockUpdateS2CPacket(pos, state), world.getRegistryKey());
+        server.getPlayerManager().sendToDimension(new BlockUpdateS2CPacket(pos, state), world);
     }
 
     public static class ShopResendSerializer extends Serializer<MinecraftServer, ShopResendCallback> {

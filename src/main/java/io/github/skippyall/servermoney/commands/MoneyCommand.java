@@ -43,7 +43,7 @@ public class MoneyCommand implements CommandRegistrationCallback {
                 .then(literal("query")
                         .then(argument("player", EntityArgumentType.player())
                                 .executes(MoneyCommand::queryPlayer)
-                                .requires(Permissions.require(ServerMoney.MOD_ID+".money.query.others", false))
+                                .requires(Permissions.require(ServerMoney.MOD_ID+".money.query.others", 2))
                         )
                         .executes(MoneyCommand::query)
                         .requires(Permissions.require(ServerMoney.MOD_ID+".money.query", true))
@@ -92,6 +92,11 @@ public class MoneyCommand implements CommandRegistrationCallback {
     public static int pay(CommandContext<ServerCommandSource> context) throws CommandSyntaxException{
         ServerPlayerEntity sourcePlayer = context.getSource().getPlayerOrThrow();
         ServerPlayerEntity targetPlayer = EntityArgumentType.getPlayer(context, "player");
+
+        if(sourcePlayer == targetPlayer) {
+            context.getSource().sendError(Text.translatable("servermoney.command.money.pay.error_self_pay"));
+        }
+
         double transfer = DoubleArgumentType.getDouble(context, "amount");
 
         if(MoneyStorage.tryPay(sourcePlayer.getUuid(), targetPlayer.getUuid(), transfer)){
@@ -100,7 +105,7 @@ public class MoneyCommand implements CommandRegistrationCallback {
             return 1;
         } else {
             double sourceMoney = MoneyStorage.getMoney(sourcePlayer);
-            context.getSource().sendError(Text.translatable("servermoney.command.money.pay.error", sourceMoney, ServerMoneyConfig.moneySymbol, transfer, ServerMoneyConfig.moneySymbol));
+            context.getSource().sendError(Text.translatable("servermoney.command.money.pay.error_not_enough_money", sourceMoney, ServerMoneyConfig.moneySymbol, transfer, ServerMoneyConfig.moneySymbol));
             return 0;
         }
     }

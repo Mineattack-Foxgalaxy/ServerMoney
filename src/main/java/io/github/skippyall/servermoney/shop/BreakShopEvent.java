@@ -13,8 +13,7 @@ public class BreakShopEvent implements PlayerBlockBreakEvents.Before {
     @Override
     public boolean beforeBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity) {
         if (ServerMoneyConfig.protectShops && blockEntity != null) {
-            ShopComponent shop = ShopStorage.getShop(blockEntity);
-            if (shop != null && shop.isShop) {
+            if (ShopAttachment.isShop(blockEntity)) {
                 return false;
             }
         }

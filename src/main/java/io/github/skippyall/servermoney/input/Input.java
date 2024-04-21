@@ -5,12 +5,8 @@ import io.github.skippyall.servermoney.ServerMoney;
 import io.github.skippyall.servermoney.config.ServerMoneyConfig;
 import io.github.skippyall.servermoney.money.MoneyStorage;
 import io.github.skippyall.servermoney.paybutton.PayButtonBlockEntity;
-import io.github.skippyall.servermoney.shop.ShopComponent;
-import io.github.skippyall.servermoney.shop.ShopStorage;
+import io.github.skippyall.servermoney.shop.ShopAttachment;
 import io.github.skippyall.servermoney.shop.modification.ShopModification;
-import io.github.skippyall.servermoney.shop.modification.ShopModificationComponent;
-import io.github.skippyall.servermoney.shop.modification.ShopModificationStorage;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.ClickEvent;
@@ -18,22 +14,22 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraft.world.event.GameEvent;
 
-import java.awt.desktop.SystemEventListener;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class Input {
-    public static void selectPrice(PlayerEntity player, ShopComponent shop) {
+    public static void selectPrice(PlayerEntity player, BlockEntity be) {
+        ShopAttachment shop = ShopAttachment.getAttachment(be);
         player.sendMessage(Text.literal("Click to set the price").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify price "))));
-        scheduleInput(InputType.PRICE, player).thenAccept(price -> shop.price = price);
+        scheduleInput(InputType.PRICE, player).thenAccept(price -> shop.setPrice(be, price));
     }
 
-    public static void selectAmount(PlayerEntity player, ShopComponent shop) {
+    public static void selectAmount(PlayerEntity player, BlockEntity be) {
+        ShopAttachment shop = ShopAttachment.getAttachment(be);
         player.sendMessage(Text.literal("Click to set the amount").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify amount "))));
-        scheduleInput(InputType.AMOUNT, player).thenAccept(amount -> shop.amount = amount);
+        scheduleInput(InputType.AMOUNT, player).thenAccept(amount -> shop.setStack(be, shop.getStack().copyWithCount(amount)));
     }
 
     /**
@@ -42,20 +38,15 @@ public class Input {
      * @param modification The ShopModification that should be applied to the selected shop
      */
     public static void selectShop(PlayerEntity player, ShopModification modification){
-        scheduleInput(InputType.SHOP, player).thenAccept(blockEntity -> {
-            ShopComponent shop = ShopStorage.getShop(blockEntity);
-            if(shop != null) {
-                modification.apply(shop);
-            }
-        });
+        scheduleInput(InputType.SHOP, player).thenAccept(modification::apply);
     }
 
-    public static void closeShop(PlayerEntity player, ShopComponent shop) {
+    public static void closeShop(PlayerEntity player, BlockEntity be) {
         player.sendMessage(Text.literal("Do you really want to close the shop? If you want, click ").append(Text.literal("here.").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/shop close")).withUnderline(true))));
         long start = System.currentTimeMillis();
         scheduleInput(InputType.CLOSE, player).thenAccept((v) -> {
             if (System.currentTimeMillis() < start + 10000) {
-                ShopModification.delShopModification().apply(shop);
+                ShopModification.delShopModification().apply(be);
                 player.sendMessage(Text.literal("Shop sucessful closed"));
             }
         });
@@ -87,8 +78,7 @@ public class Input {
      */
     public static <T> CompletableFuture<T> scheduleInput(InputType<T> type, PlayerEntity player){
         CompletableFuture<T> future = new CompletableFuture<>();
-        ShopModificationComponent component = ShopModificationStorage.getData(player);
-        component.setScheduledInput(future, type);
+        InputAttachment.setScheduledInput(player, future, type);
         return future;
     }
 

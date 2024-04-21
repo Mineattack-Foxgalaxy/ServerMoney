@@ -14,22 +14,12 @@
   "entrypoints": {
     "main": [
       "io.github.skippyall.servermoney.ServerMoney"
-    ],
-    "cardinal-components": [
-      "io.github.skippyall.servermoney.shop.modification.ShopModificationStorage",
-      "io.github.skippyall.servermoney.shop.ShopStorage"
     ]
   },
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
-    "minecraft": "${minecraft_version}"
-  },
-  "custom": {
-    "cardinal-components": [
-      "servermoney:shop",
-      "servermoney:shopcreate"
-    ]
+    "minecraft": "1.20.5-rc.2"
   },
   "mixins": [
     "servermoney.mixins.json"

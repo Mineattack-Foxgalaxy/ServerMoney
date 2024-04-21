@@ -1,11 +1,12 @@
 package io.github.skippyall.servermoney.shop.owner;
 
-import io.github.skippyall.servermoney.shop.ShopComponent;
+import io.github.skippyall.servermoney.shop.ShopAttachment;
 import io.github.skippyall.servermoney.input.Input;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
@@ -17,11 +18,11 @@ import net.minecraft.text.Text;
 
 public class OwnerShopScreenHandler extends Generic3x3ContainerScreenHandler {
     PlayerEntity viewer;
-    ShopComponent shop;
+    ShopAttachment shop;
     BlockEntity be;
     Storage<ItemVariant> storage;
 
-    public OwnerShopScreenHandler(int syncId, PlayerInventory playerInventory, PlayerEntity viewer, ShopComponent shop, BlockEntity be, Storage<ItemVariant> storage) {
+    public OwnerShopScreenHandler(int syncId, PlayerInventory playerInventory, PlayerEntity viewer, ShopAttachment shop, BlockEntity be, Storage<ItemVariant> storage) {
         super(syncId, playerInventory);
         this.viewer = viewer;
         this.shop = shop;
@@ -33,8 +34,8 @@ public class OwnerShopScreenHandler extends Generic3x3ContainerScreenHandler {
 
     private void updateIcon() {
         try(Transaction t = Transaction.openOuter()) {
-            long extracted = storage.extract(ItemVariant.of(shop.item), Long.MAX_VALUE, t);
-            int amount = shop.amount;
+            long extracted = storage.extract(ItemVariant.of(shop.getStack()), Long.MAX_VALUE, t);
+            int amount = shop.getStack().getCount();
             if (extracted / amount >= 5) {
                 setStackInSlot(1, nextRevision(), new ItemStack(Items.GREEN_WOOL, (int)extracted / amount));
             } else if (extracted >= amount) {
@@ -43,9 +44,18 @@ public class OwnerShopScreenHandler extends Generic3x3ContainerScreenHandler {
                 setStackInSlot(1, nextRevision(), new ItemStack(Items.RED_WOOL, 1));
             }
             setStackInSlot(4, getRevision(), new ItemStack(Items.CHEST));
-            setStackInSlot(8, getRevision(), new ItemStack(Items.BARRIER).setCustomName(Text.literal("Close Shop")));
-            setStackInSlot(6, getRevision(), new ItemStack(Items.GOLD_INGOT).setCustomName(Text.literal("Change Price")));
-            setStackInSlot(7, getRevision(), new ItemStack(Items.NETHERITE_SCRAP, 12).setCustomName(Text.literal("Change amount ofsold Items")));
+
+            ItemStack close = new ItemStack(Items.BARRIER);
+            close.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("servermoney.shop.owner.close"));
+            setStackInSlot(8, getRevision(), close);
+
+            ItemStack price = new ItemStack(Items.GOLD_INGOT);
+            price.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("servermoney.shop.owner.price"));
+            setStackInSlot(6, getRevision(), price);
+
+            ItemStack amountc = new ItemStack(Items.NETHERITE_SCRAP);
+            amountc.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("servermoney.shop.owner.amount"));
+            setStackInSlot(7, getRevision(), amountc);
         }
     }
 
@@ -59,13 +69,13 @@ public class OwnerShopScreenHandler extends Generic3x3ContainerScreenHandler {
                 }
             }
             if(slotIndex == 6) {
-                Input.selectPrice(player, shop);
+                Input.selectPrice(player, be);
             }
             if(slotIndex == 7) {
-                Input.selectAmount(player, shop);
+                Input.selectAmount(player, be);
             }
             if (slotIndex == 8) {
-                Input.closeShop(player, shop);
+                Input.closeShop(player, be);
             }
         }
     }

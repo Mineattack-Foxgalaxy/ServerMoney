@@ -5,6 +5,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.PersistentStateManager;
@@ -40,8 +41,9 @@ public class MoneyStorage extends PersistentState {
     public static boolean tryPay(UUID sender, UUID receiver, double money) {
         if(canPay(sender, money)) {
             double senderMoney = getMoney(sender);
-            double receiverMoney = getMoney(receiver);
             setMoney(sender, senderMoney - money);
+
+            double receiverMoney = getMoney(receiver);
             setMoney(receiver, receiverMoney + money);
             return true;
         }
@@ -56,7 +58,7 @@ public class MoneyStorage extends PersistentState {
     private static final String MONEY_KEY = "money";
 
     @Override
-    public NbtCompound writeNbt(NbtCompound nbt) {
+    public NbtCompound writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup lookup) {
         NbtList money = new NbtList();
         for(Map.Entry<UUID, Double> entry : moneymap.entrySet()){
             NbtCompound compound = new NbtCompound();
@@ -68,7 +70,7 @@ public class MoneyStorage extends PersistentState {
         return nbt;
     }
 
-    public static MoneyStorage createFromNbt(NbtCompound nbt) {
+    public static MoneyStorage createFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup lookup) {
         NbtList money = (NbtList) nbt.get("money");
         if(money!=null) {
             for (NbtElement element : money) {

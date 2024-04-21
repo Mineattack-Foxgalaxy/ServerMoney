@@ -6,7 +6,13 @@
   "servermoney.command.money.query.others": "%s has %s%s.",
   "servermoney.command.money.pay.sender": "You paid %s %s%s.",
   "servermoney.command.money.pay.receiver": "%s paid you %s%s.",
-  "servermoney.command.money.pay.error": "Not enough money: You have %s%s, but requested %s%s.",
+  "servermoney.command.money.pay.error_self_pay": "You can't pay yourself.",
+  "servermoney.command.money.pay.error_not_enough_money": "Not enough money: You have %s%s, but requested %s%s.",
   "servermoney.command.shop.create": "Creating a shop, selling %s %s for %s%s.",
-  "servermoney.input.paybutton.confirm": "Do you want to pay %s %s%s to press this button? Click here to confirm."
+  "servermoney.input.paybutton.confirm": "Do you want to pay %s %s%s to press this button? Click here to confirm.",
+  "servermoney.shop.buy.title": "Shop | Buy %s %s for %s%s",
+  "servermoney.shop.owner.title": "Shop Editor",
+  "servermoney.shop.owner.amount": "Change amount of sold Items",
+  "servermoney.shop.owner.price": "Change Price",
+  "servermoney.shop.owner.close": "Close Shop"
 }

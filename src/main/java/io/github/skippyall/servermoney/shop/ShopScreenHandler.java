@@ -19,31 +19,29 @@ import java.util.Set;
 import java.util.UUID;
 
 public class ShopScreenHandler extends Generic3x3ContainerScreenHandler {
-    Item soldItem;
+    ItemStack stack;
     ItemVariant soldItemVariant;
-    int amount;
     double price;
     Storage<ItemVariant> storage;
     UUID owner;
 
-    public ShopScreenHandler(int syncId, PlayerInventory playerInventory, Item soldItem, int amount, double price, Storage<ItemVariant> storage, UUID owner) {
+    public ShopScreenHandler(int syncId, PlayerInventory playerInventory, ItemStack stack, double price, Storage<ItemVariant> storage, UUID owner) {
         super(syncId, playerInventory);
-        this.soldItem = soldItem;
-        this.amount = amount;
+        this.stack = stack;
         this.price = price;
         this.storage = storage;
         this.owner = owner;
-        soldItemVariant = ItemVariant.of(soldItem);
+        soldItemVariant = ItemVariant.of(stack);
         updateIcon();
     }
 
     private void updateIcon() {
         try(Transaction t = Transaction.openOuter()) {
-            long extracted = storage.extract(ItemVariant.of(soldItem), amount, t);
-            if(extracted < amount){
+            long extracted = storage.extract(soldItemVariant, stack.getCount(), t);
+            if(extracted < stack.getCount()){
                 setStackInSlot(4, nextRevision(), new ItemStack(Items.BARRIER));
             } else {
-                setStackInSlot(4, nextRevision(), new ItemStack(soldItem));
+                setStackInSlot(4, nextRevision(), stack.copyWithCount(1));
             }
         }
     }
@@ -58,13 +56,13 @@ public class ShopScreenHandler extends Generic3x3ContainerScreenHandler {
                 if (money > price) {
                     long extracted;
                     try (Transaction t = Transaction.openOuter()) {
-                        extracted = storage.extract(soldItemVariant, amount, t);
-                        if (extracted == amount) {
+                        extracted = storage.extract(soldItemVariant, stack.getCount(), t);
+                        if (extracted == stack.getCount()) {
                             PlayerInventoryStorage playerInventory = PlayerInventoryStorage.of(player.getInventory());
                             long inserted;
                             try (Transaction t2 = t.openNested()) {
-                                inserted = playerInventory.insert(soldItemVariant, amount, t2);
-                                if (inserted == amount) {
+                                inserted = playerInventory.insert(soldItemVariant, stack.getCount(), t2);
+                                if (inserted == stack.getCount()) {
                                     MoneyStorage.setMoney(player, money - price);
                                     t2.commit();
                                     t.commit();

@@ -8,14 +8,15 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.skippyall.servermoney.ServerMoney;
 import io.github.skippyall.servermoney.config.ServerMoneyConfig;
 import io.github.skippyall.servermoney.input.Input;
+import io.github.skippyall.servermoney.shop.ShopAttachment;
 import io.github.skippyall.servermoney.shop.modification.ShopModification;
-import io.github.skippyall.servermoney.shop.modification.ShopModificationComponent;
-import io.github.skippyall.servermoney.shop.modification.ShopModificationStorage;
+import io.github.skippyall.servermoney.input.InputAttachment;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -57,17 +58,15 @@ public class ShopCommand implements CommandRegistrationCallback {
                         .requires(source -> {
                             ServerPlayerEntity player = source.getPlayer();
                             if(player != null) {
-                                ShopModificationComponent component = ShopModificationStorage.getData(player);
-                                return component.getInputType() == Input.InputType.CLOSE;
+                                return InputAttachment.hasInputType(player, Input.InputType.CLOSE);
                             }
                             return false;
                         })
                         .executes(context -> {
                             ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
-                            ShopModificationComponent modification = ShopModificationStorage.getData(player);
-                            if (modification.getInputType() == Input.InputType.CLOSE) {
-                                modification.getCompletableFuture(Input.InputType.CLOSE).complete(null);
-                                modification.reset();
+                            if (InputAttachment.hasInputType(player, Input.InputType.CLOSE)) {
+                                InputAttachment.getCompletableFuture(player, Input.InputType.CLOSE).complete(null);
+                                InputAttachment.removeScheduledInput(player);
                             }
                             return 0;
                         })
@@ -79,15 +78,15 @@ public class ShopCommand implements CommandRegistrationCallback {
         ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
         UUID id = player.getGameProfile().getId();
         double price = DoubleArgumentType.getDouble(context, "price");
-        Item item = ItemStackArgumentType.getItemStackArgument(context, "item").getItem();
         int amount = IntegerArgumentType.getInteger(context, "amount");
+        ItemStack item = ItemStackArgumentType.getItemStackArgument(context, "item").createStack(amount, false);
+
         ShopModification modification = new ShopModification()
-                .modifyIsShop(true)
-                .modifyShopOwner(id)
                 .modifyPrice(price)
-                .modifyItem(item)
-                .modifyAmount(amount)
-                .addPredicate(shop -> !shop.isShop);
+                .modifyStack(item)
+                .modifyShopOwner(id)
+                .addPredicate(be -> !ShopAttachment.isShop(be))
+                .addShop();
         player.sendMessage(Text.translatable("servermoney.command.shop.create",amount, item.toString(), price, ServerMoneyConfig.moneySymbol));
         Input.selectShop(player, modification);
         return 1;
@@ -95,24 +94,24 @@ public class ShopCommand implements CommandRegistrationCallback {
 
     public static int modifyPrice(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
-        ShopModificationComponent component = ShopModificationStorage.getData(player);
         double price = DoubleArgumentType.getDouble(context, "price");
-        if(component.getInputType() == Input.InputType.PRICE) {
-            component.getCompletableFuture(Input.InputType.PRICE).complete(price);
+
+        if(InputAttachment.hasInputType(player, Input.InputType.PRICE)) {
+            InputAttachment.getCompletableFuture(player, Input.InputType.PRICE).complete(price);
         } else {
-            Input.selectShop(player, new ShopModification().modifyPrice(price).addPredicate(shop -> shop.shopOwner.equals(player.getGameProfile().getId())));
+            Input.selectShop(player, new ShopModification().modifyPrice(price).addPredicate(be -> ShopAttachment.getAttachment(be).getShopOwner().equals(player.getGameProfile().getId())));
         }
         return 1;
     }
 
     public static int modifyAmount(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
-        ShopModificationComponent component = ShopModificationStorage.getData(player);
         int amount = IntegerArgumentType.getInteger(context, "amount");
-        if(component.getInputType() == Input.InputType.AMOUNT) {
-            component.getCompletableFuture(Input.InputType.AMOUNT).complete(amount);
+
+        if(InputAttachment.hasInputType(player, Input.InputType.AMOUNT)) {
+            InputAttachment.getCompletableFuture(player, Input.InputType.AMOUNT).complete(amount);
         } else {
-            Input.selectShop(player, new ShopModification().modifyAmount(amount).addPredicate(shop -> shop.shopOwner.equals(player.getGameProfile().getId())));
+            Input.selectShop(player, new ShopModification().modifyAmount(amount).addPredicate(be -> ShopAttachment.getAttachment(be).getShopOwner().equals(player.getGameProfile().getId())));
         }
         return 1;
     }
