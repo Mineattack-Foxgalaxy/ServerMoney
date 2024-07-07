@@ -38,6 +38,29 @@ public class MoneyStorage extends PersistentState {
         moneymap.put(id, money);
     }
 
+    public static double addMoney(PlayerEntity player, double money){
+        return addMoney(player.getGameProfile().getId(), money);
+    }
+
+    public static double addMoney(@NotNull UUID id, double money){
+        double newMoney = getMoney(id) + money;
+        setMoney(id, newMoney);
+        return newMoney;
+    }
+
+    public static boolean tryRemoveMoney(PlayerEntity player, double money){
+        return tryRemoveMoney(player.getGameProfile().getId(), money);
+    }
+
+    public static boolean tryRemoveMoney(@NotNull UUID id, double money){
+        if(canPay(id, money)) {
+            addMoney(id, -money);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static boolean tryPay(UUID sender, UUID receiver, double money) {
         if(canPay(sender, money)) {
             double senderMoney = getMoney(sender);
@@ -50,8 +73,12 @@ public class MoneyStorage extends PersistentState {
         return false;
     }
 
-    public static boolean canPay(UUID sender, double money) {
-        return getMoney(sender) >= money;
+    public static boolean canPay(PlayerEntity player, double money) {
+        return canPay(player.getGameProfile().getId(), money);
+    }
+
+    public static boolean canPay(UUID player, double money) {
+        return getMoney(player) >= money;
     }
 
     private static final String ID_KEY = "id";

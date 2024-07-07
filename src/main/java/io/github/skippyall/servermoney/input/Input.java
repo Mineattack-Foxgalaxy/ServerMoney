@@ -1,14 +1,16 @@
 package io.github.skippyall.servermoney.input;
 
 import com.mojang.authlib.GameProfile;
+import io.github.skippyall.servermoney.MoneyBlocks;
 import io.github.skippyall.servermoney.ServerMoney;
 import io.github.skippyall.servermoney.config.ServerMoneyConfig;
 import io.github.skippyall.servermoney.money.MoneyStorage;
 import io.github.skippyall.servermoney.paybutton.PayButtonBlockEntity;
-import io.github.skippyall.servermoney.shop.ShopAttachment;
+import io.github.skippyall.servermoney.shop.block.ShopBlockEntity;
 import io.github.skippyall.servermoney.shop.modification.ShopModification;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -20,16 +22,19 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class Input {
-    public static void selectPrice(PlayerEntity player, BlockEntity be) {
-        ShopAttachment shop = ShopAttachment.getAttachment(be);
-        player.sendMessage(Text.literal("Click to set the price").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify price "))));
-        scheduleInput(InputType.PRICE, player).thenAccept(price -> shop.setPrice(be, price));
+    public static void selectPrice(PlayerEntity player, ShopBlockEntity shop) {
+        player.sendMessage(Text.translatable("servermoney.input.price").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify price "))));
+        scheduleInput(InputType.PRICE, player).thenAccept(price -> shop.setPrice(price));
     }
 
-    public static void selectAmount(PlayerEntity player, BlockEntity be) {
-        ShopAttachment shop = ShopAttachment.getAttachment(be);
-        player.sendMessage(Text.literal("Click to set the amount").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify amount "))));
-        scheduleInput(InputType.AMOUNT, player).thenAccept(amount -> shop.setStack(be, shop.getStack().copyWithCount(amount)));
+    public static void selectAmount(PlayerEntity player, ShopBlockEntity shop) {
+        player.sendMessage(Text.translatable("servermoney.input.amount").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify amount "))));
+        scheduleInput(InputType.AMOUNT, player).thenAccept(amount -> shop.getShop().setStack(shop.getShop().getStack().copyWithCount(amount)));
+    }
+
+    public static void selectItem(PlayerEntity player, ShopBlockEntity shop) {
+        player.sendMessage(Text.translatable("servermoney.input.item").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify item"))));
+        scheduleInput(InputType.ITEM, player).thenAccept(item -> shop.getShop().setStack(item.copyWithCount(shop.getShop().getStack().getCount())));
     }
 
     /**
@@ -41,7 +46,7 @@ public class Input {
         scheduleInput(InputType.SHOP, player).thenAccept(modification::apply);
     }
 
-    public static void closeShop(PlayerEntity player, BlockEntity be) {
+    /*public static void closeShop(PlayerEntity player, ShopBlockEntity be) {
         player.sendMessage(Text.literal("Do you really want to close the shop? If you want, click ").append(Text.literal("here.").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/shop close")).withUnderline(true))));
         long start = System.currentTimeMillis();
         scheduleInput(InputType.CLOSE, player).thenAccept((v) -> {
@@ -50,7 +55,7 @@ public class Input {
                 player.sendMessage(Text.literal("Shop sucessful closed"));
             }
         });
-    }
+    }*/
 
     public static void confirmPayButton(PlayerEntity sender, UUID receiver, double amount, BlockPos pos, World world) {
         Optional<GameProfile> profile = sender.getServer().getUserCache().getByUuid(receiver);
@@ -58,12 +63,12 @@ public class Input {
         if(profile.isPresent()) {
             name = profile.get().getName();
         }
-        sender.sendMessage(Text.translatable("servermoney.input.paybutton.confirm", name, amount, ServerMoneyConfig.moneySymbol));
+        sender.sendMessage(Text.translatable("servermoney.input.paybutton.confirm", name, amount, ServerMoneyConfig.moneySymbol).setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/money confirm"))));
         long start = System.currentTimeMillis();
         scheduleInput(InputType.CONFIRM_PAY, sender).thenAccept((v) -> {
             if (System.currentTimeMillis() < start + 10000 && world.getBlockEntity(pos) instanceof PayButtonBlockEntity pbbe) {
                 if(pbbe.getOwner().equals(receiver) && MoneyStorage.tryPay(sender.getUuid(), receiver, amount)) {
-                    ServerMoney.PAY_BUTTON_BLOCK.onPay(world.getBlockState(pos), world, pos, sender);
+                    MoneyBlocks.PAY_BUTTON.block().onPay(world.getBlockState(pos), world, pos, sender);
                 }
             }
         });
@@ -85,7 +90,8 @@ public class Input {
     public static class InputType<T> {
         public static final InputType<Double> PRICE = new InputType<>();
         public static final InputType<Integer> AMOUNT = new InputType<>();
-        public static final InputType<BlockEntity> SHOP = new InputType<>();
+        public static final InputType<ItemStack> ITEM = new InputType<>();
+        public static final InputType<ShopBlockEntity> SHOP = new InputType<>();
         public static final InputType<Void> CLOSE = new InputType<>();
         public static final InputType<Void> CONFIRM_PAY = new InputType<>();
         private InputType() {

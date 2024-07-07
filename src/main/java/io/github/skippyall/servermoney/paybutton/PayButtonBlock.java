@@ -1,6 +1,8 @@
 package io.github.skippyall.servermoney.paybutton;
 
 import io.github.skippyall.servermoney.input.Input;
+import mineattack.customthings.api.CustomBlock;
+import mineattack.customthings.api.ServerPlayerInfo;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.piston.PistonBehavior;
@@ -15,9 +17,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class PayButtonBlock extends ButtonBlock implements BlockEntityProvider {
+public class PayButtonBlock extends ButtonBlock implements BlockEntityProvider, CustomBlock {
     public PayButtonBlock() {
-        super(BlockSetType.GOLD, 30, AbstractBlock.Settings.create().noCollision().strength(0.5F).pistonBehavior(PistonBehavior.DESTROY));
+        super(BlockSetType.GOLD, 30, Blocks.POLISHED_BLACKSTONE_BUTTON.getSettings());
     }
 
     @Nullable
@@ -53,5 +55,18 @@ public class PayButtonBlock extends ButtonBlock implements BlockEntityProvider {
                 } catch (NumberFormatException ignored) {}
             }
         }
+    }
+
+    @Override
+    public Block getVanillaBlock(BlockState state, ServerPlayerEntity player) {
+        return Blocks.POLISHED_BLACKSTONE_BUTTON;
+    }
+
+    @Override
+    public BlockState getVanillaBlockState(BlockState state, ServerPlayerEntity player) {
+        if (player != null && ((ServerPlayerInfo)player).supportCustomThings()) {
+            return state;
+        }
+        return getVanillaBlock(state, player).getStateWithProperties(state);
     }
 }

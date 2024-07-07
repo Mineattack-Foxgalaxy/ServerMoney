@@ -1,9 +1,8 @@
 package io.github.skippyall.servermoney.shop.modification;
 
 import io.github.skippyall.servermoney.input.Input;
-import io.github.skippyall.servermoney.shop.ShopAttachment;
+import io.github.skippyall.servermoney.shop.block.ShopBlockEntity;
 import io.github.skippyall.servermoney.util.NullableOptional;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -25,7 +24,7 @@ public class ShopModification {
     private Optional<ItemStack> stack = Optional.empty();
     private OptionalDouble price = OptionalDouble.empty();
 
-    private Set<Predicate<BlockEntity>> predicates = new HashSet<>();
+    private Set<Predicate<ShopBlockEntity>> predicates = new HashSet<>();
 
 
     public ShopModification addShop() {
@@ -57,34 +56,31 @@ public class ShopModification {
      * Adds a condition to this {@code ShopModification}. The changes will get applied only if all predicates
      * return true.
      */
-    public ShopModification addPredicate(Predicate<BlockEntity> predicate) {
+    public ShopModification addPredicate(Predicate<ShopBlockEntity> predicate) {
         predicates.add(predicate);
         return this;
     }
 
     /**
      * Applies this {@code ShopModification} to the specified shop.
-     * @param be The shop to apply the changes to.
+     * @param shop The shop to apply the changes to.
      */
-    public void apply(BlockEntity be) {
-        for(Predicate<BlockEntity> predicate : predicates){
-            if(!predicate.test(be)){
+    public void apply(ShopBlockEntity shop) {
+        for(Predicate<ShopBlockEntity> predicate : predicates){
+            if(!predicate.test(shop)){
                 return;
             }
         }
-        if(isShop.isPresent() && isShop.get()) {
-            ShopAttachment.addShop(be, new ShopAttachment());
-        }
-        if(ShopAttachment.isShop(be)) {
-            if(isShop.isPresent() && !isShop.get()) {
-                ShopAttachment.removeShop(be);
-            }
-            ShopAttachment shop = ShopAttachment.getAttachment(be);
-            shopOwner.ifPresent(value -> shop.setShopOwner(be, value));
-            stack.ifPresent(value -> shop.setStack(be, value));
-            amount.ifPresent(value -> shop.setStack(be, shop.getStack().copyWithCount(value)));
-            price.ifPresent(value -> shop.setPrice(be, value));
-        }
+
+            shopOwner.ifPresent(value -> shop.setShopOwner(value));
+            stack.ifPresent(value -> shop.setStack(value.copyWithCount(shop.getShop().getStack() != null && shop.getShop().getStack().getCount() != 0 ? shop.getShop().getStack().getCount() : 1)));
+            amount.ifPresent(value -> {
+                if(shop.getShop().getStack() != null) {
+                    shop.setStack(shop.getShop().getStack().copyWithCount(value));
+                }
+            });
+            price.ifPresent(value -> shop.setPrice(value));
+
     }
 
     /**

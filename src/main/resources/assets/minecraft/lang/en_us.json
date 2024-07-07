@@ -9,10 +9,26 @@
   "servermoney.command.money.pay.error_self_pay": "You can't pay yourself.",
   "servermoney.command.money.pay.error_not_enough_money": "Not enough money: You have %s%s, but requested %s%s.",
   "servermoney.command.shop.create": "Creating a shop, selling %s %s for %s%s.",
+
+  "servermoney.input.price": "Click to set the price",
+  "servermoney.input.amount": "Click to set the amount",
+  "servermoney.input.item": "Click to set the item.",
   "servermoney.input.paybutton.confirm": "Do you want to pay %s %s%s to press this button? Click here to confirm.",
+
   "servermoney.shop.buy.title": "Shop | Buy %s %s for %s%s",
+  "servermoney.shop.buy.out_of_stock": "There is nothing to buy left.",
+  "servermoney.shop.buy.not_enough_money": "You don't have enough money.",
+
   "servermoney.shop.owner.title": "Shop Editor",
+  "servermoney.shop.owner.stock.stock_high": "Your shop is well stocked.",
+  "servermoney.shop.owner.stock.stock_low": "Time to refill!",
+  "servermoney.shop.owner.stock.out_of_stock": "Your shop is out of stock!",
+  "servermoney.shop.owner.open": "Open Inventory",
   "servermoney.shop.owner.amount": "Change amount of sold Items",
   "servermoney.shop.owner.price": "Change Price",
-  "servermoney.shop.owner.close": "Close Shop"
+  "servermoney.shop.owner.item": "Change Item",
+  "servermoney.shop.owner.close": "Close Shop",
+
+  "item.servermoney.coin": "Coin",
+  "item.servermoney.pay_button": "Pay Button"
 }

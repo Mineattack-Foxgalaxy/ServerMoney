@@ -13,11 +13,10 @@ repositories {
     // See https://docs.gradle.org/current/userguide/declaring_repositories.html
     // for more information about repositories.
     maven {
-        name = 'Ladysnake Mods'
-        url = 'https://maven.ladysnake.org/releases'
+        url = 'https://oss.sonatype.org/content/repositories/snapshots'
     }
     maven {
-        url = 'https://oss.sonatype.org/content/repositories/snapshots'
+        url = "https://maven.foxgalaxy.de/snapshot"
     }
     exclusiveContent {
         forRepository {
@@ -40,6 +39,8 @@ dependencies {
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
+    modImplementation("de.foxgalaxy.mineattack:CustomThings:0.2-SNAPSHOT")
 
     modImplementation "me.lucko:fabric-permissions-api:${project.fabric_permission_api_version}"
     include "me.lucko:fabric-permissions-api:${project.fabric_permission_api_version}"

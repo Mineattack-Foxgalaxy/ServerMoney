@@ -2,13 +2,19 @@ package io.github.skippyall.servermoney.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.skippyall.servermoney.ServerMoney;
 import io.github.skippyall.servermoney.config.ServerMoneyConfig;
+import io.github.skippyall.servermoney.input.Input;
+import io.github.skippyall.servermoney.input.InputAttachment;
 import io.github.skippyall.servermoney.money.MoneyStorage;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.server.command.CommandManager;
@@ -55,6 +61,20 @@ public class MoneyCommand implements CommandRegistrationCallback {
                                 )
                         )
                         .requires(Permissions.require(ServerMoney.MOD_ID+".money.set", 2))
+                )
+                .then(literal("withdraw")
+                        .then(argument("amount", IntegerArgumentType.integer(0))
+                                .executes(MoneyCommand::withdraw)
+                        )
+                )
+                .then(literal("deposit")
+                        .then(argument("amount", IntegerArgumentType.integer(0))
+                                .executes(MoneyCommand::deposit)
+                        )
+                        .executes(MoneyCommand::depositAll)
+                )
+                .then(literal("confirm")
+                        .executes(MoneyCommand::confirm)
                 )
         );
     }
@@ -108,5 +128,48 @@ public class MoneyCommand implements CommandRegistrationCallback {
             context.getSource().sendError(Text.translatable("servermoney.command.money.pay.error_not_enough_money", sourceMoney, ServerMoneyConfig.moneySymbol, transfer, ServerMoneyConfig.moneySymbol));
             return 0;
         }
+    }
+
+    public static int withdraw(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
+        int amount = IntegerArgumentType.getInteger(context, "amount");
+        PlayerInventoryStorage storage = PlayerInventoryStorage.of(player);
+
+        try(Transaction t = Transaction.openOuter()) {
+            if (storage.insert(ItemVariant.of(ServerMoney.COIN_ITEM), amount, t) == amount && MoneyStorage.tryRemoveMoney(player, amount)) {
+                t.commit();
+            }
+        }
+        return 0;
+    }
+
+    public static int depositAll(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
+        deposit(player, Integer.MAX_VALUE);
+        return 0;
+    }
+
+    public static int deposit(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
+        int amount = IntegerArgumentType.getInteger(context, "amount");
+        deposit(player, amount);
+        return 0;
+    }
+
+    public static void deposit(ServerPlayerEntity player, int amount) {
+        PlayerInventoryStorage storage = PlayerInventoryStorage.of(player);
+
+        try(Transaction t = Transaction.openOuter()) {
+            MoneyStorage.addMoney(player, storage.extract(ItemVariant.of(ServerMoney.COIN_ITEM), amount, t));
+            t.commit();
+        }
+    }
+
+    public static int confirm(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
+        if(InputAttachment.hasInputType(player, Input.InputType.CONFIRM_PAY)) {
+            InputAttachment.getCompletableFuture(player, Input.InputType.CONFIRM_PAY).complete(null);
+        }
+        return 0;
     }
 }

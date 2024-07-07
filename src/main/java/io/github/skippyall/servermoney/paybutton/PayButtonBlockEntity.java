@@ -1,6 +1,8 @@
 package io.github.skippyall.servermoney.paybutton;
 
+import io.github.skippyall.servermoney.MoneyBlocks;
 import io.github.skippyall.servermoney.ServerMoney;
+import mineattack.customthings.api.CustomBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -9,12 +11,12 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.UUID;
 
-public class PayButtonBlockEntity extends BlockEntity {
-    private UUID owner;
-    private double amount;
+public class PayButtonBlockEntity extends BlockEntity implements CustomBlockEntity {
+    private UUID owner = null;
+    private double amount = 0;
 
     public PayButtonBlockEntity(BlockPos pos, BlockState state) {
-        super(ServerMoney.PAY_BUTTON_BET, pos, state);
+        super(MoneyBlocks.PAY_BUTTON.blockEntityType(), pos, state);
     }
 
     public void setOwner(UUID owner) {
@@ -37,13 +39,13 @@ public class PayButtonBlockEntity extends BlockEntity {
 
     @Override
     public void readNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup lookup) {
-        nbt.putUuid("owner", owner);
-        nbt.putDouble("amount", amount);
+        owner = nbt.getUuid("owner");
+        amount = nbt.getDouble("amount");
     }
 
     @Override
     public void writeNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup lookup) {
-        owner = nbt.getUuid("owner");
-        amount = nbt.getDouble("amount");
+        nbt.putUuid("owner", owner);
+        nbt.putDouble("amount", amount);
     }
 }
