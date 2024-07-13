@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings("UnstableApiUsage")
 public class InputAttachment {
-    public static final AttachmentType<InputAttachment> INPUT_ATTACHMENT = AttachmentRegistry.createDefaulted(new Identifier(ServerMoney.MOD_ID, "input"), InputAttachment::new);
+    public static final AttachmentType<InputAttachment> INPUT_ATTACHMENT = AttachmentRegistry.createDefaulted(Identifier.of(ServerMoney.MOD_ID, "input"), InputAttachment::new);
     public static final InputAttachment NULL_INPUT = new InputAttachment();
     private CompletableFuture<?> scheduledInput = null;
     private Input.InputType<?>  inputType = null;

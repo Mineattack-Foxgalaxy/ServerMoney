@@ -22,7 +22,7 @@ public record ShopResendCallback(BlockState state, BlockPos pos, RegistryKey<Wor
 
     public static class ShopResendSerializer extends Serializer<MinecraftServer, ShopResendCallback> {
         public ShopResendSerializer() {
-            super(new Identifier(ServerMoney.MOD_ID, "shopresend"), ShopResendCallback.class);
+            super(Identifier.of(ServerMoney.MOD_ID, "shopresend"), ShopResendCallback.class);
         }
 
         @Override

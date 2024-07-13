@@ -1,7 +1,5 @@
 {
   "package": "io.github.skippyall.servermoney.mixin",
   "mixins": [
-    "AbstractBlockMixin",
-    "InventoryMixin"
   ]
 }

@@ -1,5 +1,11 @@
 {
   "servermoney.midnightconfig.title": "Server Money Configuration",
+
+  "servermoney.midnightconfig.moneySymbol": "Currency symbol",
+  "servermoney.midnightconfig.initialMoney": "Initial Money",
+  "servermoney.midnightconfig.moneyPerTick": "Money per tick",
+  "servermoney.midnightconfig.protectShops": "Protect shops",
+
   "servermoney.command.money.give": "You gave %s %s%s.",
   "servermoney.command.money.set": "You set %s's money to %s%s.",
   "servermoney.command.money.query": "You have %s%s.",
@@ -30,5 +36,7 @@
   "servermoney.shop.owner.close": "Close Shop",
 
   "item.servermoney.coin": "Coin",
-  "item.servermoney.pay_button": "Pay Button"
+  "item.servermoney.pay_button": "Pay Button",
+  "item.servermoney.shop_chest": "Shop Chest",
+  "item.servermoney.shop_barrel": "Shop Barrel"
 }

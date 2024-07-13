@@ -1,6 +1,7 @@
 package io.github.skippyall.servermoney.money;
 
 import io.github.skippyall.servermoney.ServerMoney;
+import io.github.skippyall.servermoney.config.ServerMoneyConfig;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -18,7 +19,7 @@ import java.util.UUID;
 
 public class MoneyStorage extends PersistentState {
     public static final Type<MoneyStorage> TYPE = new Type<>(MoneyStorage::new, MoneyStorage::createFromNbt, null);
-    private static HashMap<UUID, Double> moneymap = new HashMap<>();
+    private static final HashMap<UUID, Double> moneymap = new HashMap<>();
 
     private static MoneyStorage INSTANCE;
 
@@ -27,7 +28,7 @@ public class MoneyStorage extends PersistentState {
     }
 
     public static double getMoney(UUID id){
-        return moneymap.containsKey(id)?moneymap.get(id):0;
+        return moneymap.containsKey(id) ? moneymap.get(id) : ServerMoneyConfig.initialMoney;
     }
 
     public static void setMoney(PlayerEntity player, double money){

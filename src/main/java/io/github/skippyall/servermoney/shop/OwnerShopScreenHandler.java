@@ -53,11 +53,8 @@ public class OwnerShopScreenHandler extends Generic3x3ContainerScreenHandler {
                 }
             }
         }
-        setStackInSlot(4, getRevision(), new ItemStack(Items.CHEST));
 
-        ItemStack close = new ItemStack(Items.BARRIER);
-        close.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("servermoney.shop.owner.close"));
-        setStackInSlot(8, getRevision(), close);
+        setStackInSlot(4, getRevision(), new ItemStack(Items.CHEST));
 
         ItemStack price = new ItemStack(Items.GOLD_INGOT);
         price.set(DataComponentTypes.CUSTOM_NAME, Text.translatable("servermoney.shop.owner.price"));
@@ -83,9 +80,6 @@ public class OwnerShopScreenHandler extends Generic3x3ContainerScreenHandler {
             if(slotIndex == 7) {
                 Input.selectAmount(player, shop);
             }
-            /*if (slotIndex == 8) {
-                Input.closeShop(player, shop);
-            }*/
         }
     }
 }
