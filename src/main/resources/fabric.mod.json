@@ -21,8 +21,5 @@
     "fabric": "*",
     "minecraft": "${minecraft_version}",
     "customthing": "*"
-  },
-  "mixins": [
-    "servermoney.mixins.json"
-  ]
+  }
 }

@@ -18,7 +18,7 @@ import java.util.function.BiConsumer;
 
 public class ShopChestBlock extends ChestBlock implements ShopBlock {
     public ShopChestBlock() {
-        super(Blocks.CHEST.getSettings(), MoneyBlocks.SHOP_CHEST::blockEntityType);
+        super(Blocks.CHEST.getSettings(), () -> MoneyBlocks.SHOP_CHEST.blockEntityType());
     }
 
     @Override

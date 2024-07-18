@@ -36,5 +36,8 @@
   "item.servermoney.coin": "Münze",
   "item.servermoney.pay_button": "Bezahlknopf",
   "item.servermoney.shop_chest": "Shop-Truhe",
-  "item.servermoney.shop_barrel": "Shop-Fass"
+  "item.servermoney.shop_barrel": "Shop-Fass",
+  "block.servermoney.pay_button": "Bezahlknopf",
+  "block.servermoney.shop_chest": "Shop-Truhe",
+  "block.servermoney.shop_barrel": "Shop-Fass"
 }

@@ -38,5 +38,8 @@
   "item.servermoney.coin": "Coin",
   "item.servermoney.pay_button": "Pay Button",
   "item.servermoney.shop_chest": "Shop Chest",
-  "item.servermoney.shop_barrel": "Shop Barrel"
+  "item.servermoney.shop_barrel": "Shop Barrel",
+  "block.servermoney.pay_button": "Pay Button",
+  "block.servermoney.shop_chest": "Shop Chest",
+  "block.servermoney.shop_barrel": "Shop Barrel"
 }

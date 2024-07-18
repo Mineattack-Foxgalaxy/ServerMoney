@@ -1,0 +1,16 @@
+{
+  "type":"minecraft:crafting_shaped",
+  "pattern": [
+    "H",
+    "B",
+    "D"
+  ],
+  "key": {
+    "H": "minecraft:hopper",
+    "B": "minecraft:barrel",
+    "D": "minecraft:dropper"
+  },
+  "result": {
+    "id": "servermoney:shop_barrel"
+  }
+}
