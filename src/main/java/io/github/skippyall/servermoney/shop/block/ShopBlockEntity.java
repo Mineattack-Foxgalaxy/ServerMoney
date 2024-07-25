@@ -17,8 +17,12 @@ public interface ShopBlockEntity extends CustomBlockEntity {
         return getShop().getShopOwner();
     }
 
-    default ItemStack getStack() {
-        return getShop().getStack();
+    default ItemVariant getItem() {
+        return getShop().getItem();
+    }
+
+    default int getCount() {
+        return getShop().getCount();
     }
 
     default double getPrice() {
@@ -29,8 +33,12 @@ public interface ShopBlockEntity extends CustomBlockEntity {
         getShop().setShopOwner(shopOwner);
     }
 
-    default void setStack(ItemStack stack) {
-        getShop().setStack(stack);
+    default void setItem(ItemVariant variant) {
+        getShop().setItem(variant);
+    }
+
+    default void setCount(int count) {
+        getShop().setCount(count);
     }
 
     default void setPrice(double price) {

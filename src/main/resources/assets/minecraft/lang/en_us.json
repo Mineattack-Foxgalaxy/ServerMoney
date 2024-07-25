@@ -41,5 +41,6 @@
   "item.servermoney.shop_barrel": "Shop Barrel",
   "block.servermoney.pay_button": "Pay Button",
   "block.servermoney.shop_chest": "Shop Chest",
-  "block.servermoney.shop_barrel": "Shop Barrel"
+  "block.servermoney.shop_barrel": "Shop Barrel",
+  "servermoney.shop.owner.amount.current": "Current Amount: %s"
 }

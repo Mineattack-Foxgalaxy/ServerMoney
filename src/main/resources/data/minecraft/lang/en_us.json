@@ -6,22 +6,22 @@
   "servermoney.midnightconfig.moneyPerTick": "Money per tick",
   "servermoney.midnightconfig.protectShops": "Protect shops",
 
-  "servermoney.command.money.give": "You gave %s %s%s.",
-  "servermoney.command.money.set": "You set %s's money to %s%s.",
+  "servermoney.command.money.give": "You gave %s %s %s.",
+  "servermoney.command.money.set": "You set %s's money to %s %s.",
   "servermoney.command.money.query": "You have %s%s.",
-  "servermoney.command.money.query.others": "%s has %s%s.",
-  "servermoney.command.money.pay.sender": "You paid %s %s%s.",
-  "servermoney.command.money.pay.receiver": "%s paid you %s%s.",
+  "servermoney.command.money.query.others": "%s has %s %s.",
+  "servermoney.command.money.pay.sender": "You paid %s %s %s.",
+  "servermoney.command.money.pay.receiver": "%s paid you %s %s.",
   "servermoney.command.money.pay.error_self_pay": "You can't pay yourself.",
-  "servermoney.command.money.pay.error_not_enough_money": "Not enough money: You have %s%s, but requested %s%s.",
-  "servermoney.command.shop.create": "Creating a shop, selling %s %s for %s%s.",
+  "servermoney.command.money.pay.error_not_enough_money": "Not enough money: You have %s %s, but requested %s %s.",
+  "servermoney.command.shop.create": "Creating a shop, selling %s %s for %s %s.",
 
   "servermoney.input.price": "Click to set the price",
   "servermoney.input.amount": "Click to set the amount",
   "servermoney.input.item": "Click to set the item.",
   "servermoney.input.paybutton.confirm": "Do you want to pay %s %s%s to press this button? Click here to confirm.",
 
-  "servermoney.shop.buy.title": "Shop | Buy %s %s for %s%s",
+  "servermoney.shop.buy.title": "Shop | Buy %s %s for %s %s",
   "servermoney.shop.buy.out_of_stock": "There is nothing to buy left.",
   "servermoney.shop.buy.not_enough_money": "You don't have enough money.",
 
@@ -33,7 +33,9 @@
   "servermoney.shop.owner.amount": "Change amount of sold Items",
   "servermoney.shop.owner.price": "Change Price",
   "servermoney.shop.owner.item": "Change Item",
-  "servermoney.shop.owner.close": "Close Shop",
+  "servermoney.shop.owner.amount.current": "Current Amount: %s",
+  "servermoney.shop.owner.price.current": "Current Price: %s %s",
+  "servermoney.shop.owner.item.current": "Current Item: %s",
 
   "item.servermoney.coin": "Coin",
   "item.servermoney.pay_button": "Pay Button",
@@ -42,4 +44,5 @@
   "block.servermoney.pay_button": "Pay Button",
   "block.servermoney.shop_chest": "Shop Chest",
   "block.servermoney.shop_barrel": "Shop Barrel"
+
 }

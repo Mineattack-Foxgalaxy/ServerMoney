@@ -12,6 +12,7 @@ import io.github.skippyall.servermoney.shop.modification.ShopModification;
 import io.github.skippyall.servermoney.input.InputAttachment;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.ItemStackArgumentType;
 import net.minecraft.item.ItemStack;
@@ -27,18 +28,6 @@ public class ShopCommand implements CommandRegistrationCallback {
     @Override
     public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess access, CommandManager.RegistrationEnvironment environment) {
         dispatcher.register(literal("shop")
-                /*.then(literal("create")
-                        .then(argument("price", DoubleArgumentType.doubleArg())
-                                .then(argument("amount", IntegerArgumentType.integer())
-                                        .then(argument("item", ItemStackArgumentType.itemStack(access))
-                                                .executes(ShopCommand::create)
-                                        )
-                                        .executes(ShopCommand::createHand)
-                                )
-                                .executes(ShopCommand::createHandWithCount)
-                        )
-                        .requires(Permissions.require(ServerMoney.MOD_ID+".shop.create", true))
-                )*/
                 .then(literal("modify")
                         .then(literal("price")
                                 .then(argument("price", DoubleArgumentType.doubleArg(0))
@@ -59,66 +48,8 @@ public class ShopCommand implements CommandRegistrationCallback {
                         )
                         .requires(Permissions.require(ServerMoney.MOD_ID+".shop.modify", true))
                 )
-                /*.then(literal("close")
-                        .requires(source -> {
-                            ServerPlayerEntity player = source.getPlayer();
-                            if(player != null) {
-                                return InputAttachment.hasInputType(player, Input.InputType.CLOSE);
-                            }
-                            return false;
-                        })
-                        .executes(context -> {
-                            ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
-                            if (InputAttachment.hasInputType(player, Input.InputType.CLOSE)) {
-                                InputAttachment.getCompletableFuture(player, Input.InputType.CLOSE).complete(null);
-                                InputAttachment.removeScheduledInput(player);
-                            }
-                            return 0;
-                        })
-                )*/
         );
     }
-
-    /*public static int create(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
-        double price = DoubleArgumentType.getDouble(context, "price");
-        int amount = IntegerArgumentType.getInteger(context, "amount");
-        ItemStack item = ItemStackArgumentType.getItemStackArgument(context, "item").createStack(amount, false);
-
-        create(player, price, item);
-        return 1;
-    }
-
-    public static int createHand(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
-        double price = DoubleArgumentType.getDouble(context, "price");
-        int amount = IntegerArgumentType.getInteger(context, "amount");
-        ItemStack item = player.getMainHandStack().copyWithCount(amount);
-
-        create(player, price, item);
-        return 1;
-    }
-
-    public static int createHandWithCount(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
-        double price = DoubleArgumentType.getDouble(context, "price");
-        ItemStack item = player.getMainHandStack().copy();
-
-        create(player, price, item);
-        return 1;
-    }
-
-    public static void create(ServerPlayerEntity player, double price, ItemStack item) {
-        ShopModification modification = new ShopModification()
-                .modifyPrice(price)
-                .modifyStack(item)
-                .modifyAmount(item.getCount())
-                .modifyShopOwner(player.getGameProfile().getId())
-                .addPredicate(be -> true)
-                .addShop();
-        player.sendMessage(Text.translatable("servermoney.command.shop.create", item.getCount(), Text.translatable(item.getTranslationKey()), price, ServerMoneyConfig.moneySymbol));
-        Input.selectShop(player, modification);
-    }*/
 
     public static int modifyPrice(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
@@ -160,9 +91,9 @@ public class ShopCommand implements CommandRegistrationCallback {
 
     public static void modifyItem(ServerPlayerEntity player, ItemStack stack) {
         if(InputAttachment.hasInputType(player, Input.InputType.ITEM)) {
-            InputAttachment.getCompletableFuture(player, Input.InputType.ITEM).complete(stack);
+            InputAttachment.getCompletableFuture(player, Input.InputType.ITEM).complete(ItemVariant.of(stack));
         } else {
-            Input.selectShop(player, new ShopModification().modifyStack(stack).addPredicate(be -> be.getShop().getShopOwner().equals(player.getGameProfile().getId())));
+            Input.selectShop(player, new ShopModification().modifyItem(ItemVariant.of(stack)).addPredicate(be -> be.getShop().getShopOwner().equals(player.getGameProfile().getId())));
         }
     }
 }

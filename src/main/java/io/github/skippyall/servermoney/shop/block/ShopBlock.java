@@ -44,7 +44,7 @@ public interface ShopBlock extends CustomBlock {
             if (player.getGameProfile().getId().equals(shop.getShopOwner())) {
                 OwnerShopScreenHandler.openOwnerShopScreen(player, shop);
             } else {
-                if(!shop.getStack().isEmpty()) {
+                if(!shop.getItem().isBlank()) {
                     ShopScreenHandler.openShopScreen(player, shop);
                 }
             }

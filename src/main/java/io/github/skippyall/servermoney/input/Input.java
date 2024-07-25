@@ -8,6 +8,7 @@ import io.github.skippyall.servermoney.money.MoneyStorage;
 import io.github.skippyall.servermoney.paybutton.PayButtonBlockEntity;
 import io.github.skippyall.servermoney.shop.block.ShopBlockEntity;
 import io.github.skippyall.servermoney.shop.modification.ShopModification;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -24,17 +25,17 @@ import java.util.concurrent.CompletableFuture;
 public class Input {
     public static void selectPrice(PlayerEntity player, ShopBlockEntity shop) {
         player.sendMessage(Text.translatable("servermoney.input.price").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify price "))));
-        scheduleInput(InputType.PRICE, player).thenAccept(price -> shop.setPrice(price));
+        scheduleInput(InputType.PRICE, player).thenAccept(shop::setPrice);
     }
 
     public static void selectAmount(PlayerEntity player, ShopBlockEntity shop) {
         player.sendMessage(Text.translatable("servermoney.input.amount").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify amount "))));
-        scheduleInput(InputType.AMOUNT, player).thenAccept(amount -> shop.getShop().setStack(shop.getShop().getStack().copyWithCount(amount)));
+        scheduleInput(InputType.AMOUNT, player).thenAccept(shop::setCount);
     }
 
     public static void selectItem(PlayerEntity player, ShopBlockEntity shop) {
         player.sendMessage(Text.translatable("servermoney.input.item").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify item"))));
-        scheduleInput(InputType.ITEM, player).thenAccept(item -> shop.getShop().setStack(item.copyWithCount(shop.getShop().getStack().getCount())));
+        scheduleInput(InputType.ITEM, player).thenAccept(shop::setItem);
     }
 
     /**
@@ -90,7 +91,7 @@ public class Input {
     public static class InputType<T> {
         public static final InputType<Double> PRICE = new InputType<>();
         public static final InputType<Integer> AMOUNT = new InputType<>();
-        public static final InputType<ItemStack> ITEM = new InputType<>();
+        public static final InputType<ItemVariant> ITEM = new InputType<>();
         public static final InputType<ShopBlockEntity> SHOP = new InputType<>();
         public static final InputType<Void> CLOSE = new InputType<>();
         public static final InputType<Void> CONFIRM_PAY = new InputType<>();

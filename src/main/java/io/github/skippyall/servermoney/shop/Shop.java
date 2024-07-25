@@ -1,23 +1,30 @@
 package io.github.skippyall.servermoney.shop;
 
 import net.fabricmc.fabric.api.entity.FakePlayer;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.registry.RegistryWrapper;
 
 import java.util.UUID;
 
 public class Shop {
     private UUID shopOwner = FakePlayer.DEFAULT_UUID;
-    private ItemStack stack = ItemStack.EMPTY;
+    private ItemVariant item = ItemVariant.blank();
+    private int count = 0;
     private double price = 0;
 
     public UUID getShopOwner() {
         return shopOwner;
     }
 
-    public ItemStack getStack() {
-        return stack;
+    public ItemVariant getItem() {
+        return item;
+    }
+
+    public int getCount(){
+        return count;
     }
 
     public double getPrice() {
@@ -28,8 +35,12 @@ public class Shop {
         this.shopOwner = shopOwner;
     }
 
-    public void setStack(ItemStack stack) {
-        this.stack = stack;
+    public void setItem(ItemVariant item) {
+        this.item = item;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public void setPrice(double price) {
@@ -40,13 +51,15 @@ public class Shop {
         NbtCompound shop = new NbtCompound();
         shop.putUuid("owner", getShopOwner());
         shop.putDouble("price", getPrice());
-        shop.put("stack", getStack().encodeAllowEmpty(registryLookup));
+        shop.put("item", ItemVariant.CODEC.encode(getItem(), NbtOps.INSTANCE, null).getOrThrow());
+        shop.putInt("count", getCount());
         return shop;
     }
 
     public void decode(NbtCompound shop, RegistryWrapper.WrapperLookup registryLookup) {
         setShopOwner(shop.getUuid("owner"));
         setPrice(shop.getDouble("price"));
-        setStack(ItemStack.fromNbtOrEmpty(registryLookup, shop.getCompound("stack")));
+        ItemVariant.CODEC.decode(NbtOps.INSTANCE, shop.get("item")).ifSuccess(pair -> setItem(pair.getFirst()));
+        setCount(shop.getInt("count"));
     }
 }

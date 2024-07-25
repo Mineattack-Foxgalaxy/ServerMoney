@@ -31,41 +31,41 @@ public class ShopScreenHandler extends Generic3x3ContainerScreenHandler {
     Storage<ItemVariant> storage;
     UUID viewer;
 
-    ItemStack stack;
     UUID owner;
     double price;
     ItemVariant soldItemVariant;
+    int count;
 
     public ShopScreenHandler(int syncId, PlayerInventory playerInventory, PlayerEntity player, ShopBlockEntity shop) {
         super(syncId, playerInventory);
-        this.stack = shop.getStack();
         this.price = shop.getPrice();
         this.storage = shop.getStorage();
         this.owner = shop.getShopOwner();
-        soldItemVariant = ItemVariant.of(stack);
+        soldItemVariant = shop.getItem();
+        count = shop.getCount();
         this.viewer = player.getUuid();
         updateIcon();
     }
 
     public static void openShopScreen(PlayerEntity viewer, ShopBlockEntity shop) {
-        viewer.openHandledScreen(new SimpleNamedScreenHandlerFactory((syncid, playerInventory, player2) -> new ShopScreenHandler(syncid, playerInventory, player2, shop), getDisplayName(shop.getShop().getStack(), shop.getShop().getPrice())));
+        viewer.openHandledScreen(new SimpleNamedScreenHandlerFactory((syncid, playerInventory, player2) -> new ShopScreenHandler(syncid, playerInventory, player2, shop), getDisplayName(shop.getShop().getItem(), shop.getCount(), shop.getShop().getPrice())));
     }
 
     private void updateIcon() {
         try(Transaction t = Transaction.openOuter()) {
-            long extracted = storage.extract(soldItemVariant, stack.getCount(), t);
-            ItemStack icon = stack.copyWithCount(1);
-            if(extracted < stack.getCount()){
-                stack.getOrDefault(DataComponentTypes.LORE, new LoreComponent(new ArrayList<>())).with(Text.translatable("servermoney.shop.buy.out_of_stock"));
+            long extracted = storage.extract(soldItemVariant, count, t);
+            ItemStack icon = soldItemVariant.toStack();
+            if(extracted < count){
+                icon.set(DataComponentTypes.LORE, icon.getOrDefault(DataComponentTypes.LORE, new LoreComponent(new ArrayList<>())).with(Text.translatable("servermoney.shop.buy.out_of_stock")));
             } else if(!MoneyStorage.canPay(viewer, price)) {
-                stack.getOrDefault(DataComponentTypes.LORE, new LoreComponent(new ArrayList<>())).with(Text.translatable("servermoney.shop.buy.not_enough_money"));
+                icon.set(DataComponentTypes.LORE, icon.getOrDefault(DataComponentTypes.LORE, new LoreComponent(new ArrayList<>())).with(Text.translatable("servermoney.shop.buy.not_enough_money")));
             }
-            setStackInSlot(4, nextRevision(), stack.copyWithCount(1));
+            setStackInSlot(4, nextRevision(), icon.copyWithCount(1));
         }
     }
 
-    public static Text getDisplayName(ItemStack stack, double price) {
-        return Text.translatable("servermoney.shop.buy.title", stack.getCount(), Text.translatable(stack.getTranslationKey()), price, ServerMoneyConfig.moneySymbol);
+    public static Text getDisplayName(ItemVariant item, int count, double price) {
+        return Text.translatable("servermoney.shop.buy.title", count, Text.translatable(item.getItem().getTranslationKey()), price, ServerMoneyConfig.moneySymbol);
     }
 
     Set<SlotActionType> ALLOWED_ACTIONS = Set.of(SlotActionType.PICKUP, SlotActionType.SWAP, SlotActionType.THROW, SlotActionType.CLONE);
@@ -77,13 +77,13 @@ public class ShopScreenHandler extends Generic3x3ContainerScreenHandler {
                 if (MoneyStorage.canPay(player.getUuid(), price)) {
                     long extracted;
                     try (Transaction t = Transaction.openOuter()) {
-                        extracted = storage.extract(soldItemVariant, stack.getCount(), t);
-                        if (extracted == stack.getCount()) {
+                        extracted = storage.extract(soldItemVariant, count, t);
+                        if (extracted == count) {
                             PlayerInventoryStorage playerInventory = PlayerInventoryStorage.of(player.getInventory());
                             long inserted;
                             try (Transaction t2 = t.openNested()) {
-                                inserted = playerInventory.insert(soldItemVariant, stack.getCount(), t2);
-                                if (inserted == stack.getCount()) {
+                                inserted = playerInventory.insert(soldItemVariant, count, t2);
+                                if (inserted == count) {
                                     MoneyStorage.tryPay(player.getUuid(), owner, price);
                                     t2.commit();
                                     t.commit();

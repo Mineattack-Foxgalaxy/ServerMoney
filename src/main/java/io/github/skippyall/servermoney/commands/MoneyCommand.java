@@ -84,7 +84,7 @@ public class MoneyCommand implements CommandRegistrationCallback {
         GameProfile player = GameProfileArgumentType.getProfileArgument(context, "player").iterator().next();
         double addition = DoubleArgumentType.getDouble(context, "amount");
         MoneyStorage.addMoney(player.getId(), addition);
-        context.getSource().sendMessage(Text.translatable("servermoney.command.money.give", player.getName(), addition, ServerMoneyConfig.moneySymbol));
+        context.getSource().sendFeedback(() -> Text.translatable("servermoney.command.money.give", player.getName(), addition, ServerMoneyConfig.moneySymbol), true);
         return 1;
     }
 
@@ -92,37 +92,40 @@ public class MoneyCommand implements CommandRegistrationCallback {
         GameProfile player = GameProfileArgumentType.getProfileArgument(context, "player").iterator().next();
         double money = DoubleArgumentType.getDouble(context, "amount");
         MoneyStorage.setMoney(player.getId(), money);
-        context.getSource().sendMessage(Text.translatable("servermoney.command.money.set", player.getName(), money, ServerMoneyConfig.moneySymbol));
+        context.getSource().sendFeedback(() -> Text.translatable("servermoney.command.money.set", player.getName(), money, ServerMoneyConfig.moneySymbol), true);
         return 1;
     }
 
     public static int query(CommandContext<ServerCommandSource> context) throws CommandSyntaxException{
         ServerPlayerEntity targetPlayer = context.getSource().getPlayerOrThrow();
         double money = MoneyStorage.getMoney(targetPlayer);
-        context.getSource().sendMessage(Text.translatable("servermoney.command.money.query", money, ServerMoneyConfig.moneySymbol));
+        context.getSource().sendFeedback(() -> Text.translatable("servermoney.command.money.query", money, ServerMoneyConfig.moneySymbol),false);
         return (int) money;
     }
 
     public static int queryPlayer(CommandContext<ServerCommandSource> context) throws CommandSyntaxException{
         GameProfile targetPlayer = GameProfileArgumentType.getProfileArgument(context, "player").iterator().next();
         double money = MoneyStorage.getMoney(targetPlayer.getId());
-        context.getSource().sendMessage(Text.translatable("servermoney.command.money.query.others", targetPlayer.getId(), money, ServerMoneyConfig.moneySymbol));
+        context.getSource().sendFeedback(() -> Text.translatable("servermoney.command.money.query.others", targetPlayer.getName(), money, ServerMoneyConfig.moneySymbol), false);
         return (int) money;
     }
 
     public static int pay(CommandContext<ServerCommandSource> context) throws CommandSyntaxException{
         ServerPlayerEntity sourcePlayer = context.getSource().getPlayerOrThrow();
-        GameProfile targetPlayer = GameProfileArgumentType.getProfileArgument(context, "player").iterator().next();
+        GameProfile targetProfile = GameProfileArgumentType.getProfileArgument(context, "player").iterator().next();
+        ServerPlayerEntity targetPlayer = sourcePlayer.getServer().getPlayerManager().getPlayer(targetProfile.getId());
 
-        if(sourcePlayer.getUuid().equals(targetPlayer.getId())) {
+        if(sourcePlayer.getUuid().equals(targetProfile.getId())) {
             context.getSource().sendError(Text.translatable("servermoney.command.money.pay.error_self_pay"));
         }
 
         double transfer = DoubleArgumentType.getDouble(context, "amount");
 
-        if(MoneyStorage.tryPay(sourcePlayer.getUuid(), targetPlayer.getId(), transfer)){
-            sourcePlayer.sendMessage(Text.translatable("servermoney.command.money.pay.sender", targetPlayer.getName(), transfer, ServerMoneyConfig.moneySymbol));
-            sourcePlayer.sendMessage(Text.translatable("servermoney.command.money.pay.receiver", targetPlayer.getName(), transfer, ServerMoneyConfig.moneySymbol));
+        if(MoneyStorage.tryPay(sourcePlayer.getUuid(), targetProfile.getId(), transfer)){
+            context.getSource().sendFeedback(() -> Text.translatable("servermoney.command.money.pay.sender", targetProfile.getName(), transfer, ServerMoneyConfig.moneySymbol), false);
+            if(targetPlayer != null) {
+                targetPlayer.sendMessage(Text.translatable("servermoney.command.money.pay.receiver", targetProfile.getName(), transfer, ServerMoneyConfig.moneySymbol));
+            }
             return 1;
         } else {
             double sourceMoney = MoneyStorage.getMoney(sourcePlayer);
