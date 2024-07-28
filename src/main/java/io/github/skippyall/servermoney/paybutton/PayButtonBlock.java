@@ -1,23 +1,20 @@
 package io.github.skippyall.servermoney.paybutton;
 
+import eu.pb4.polymer.core.api.block.PolymerBlock;
 import io.github.skippyall.servermoney.input.Input;
-import mineattack.customthings.api.CustomBlock;
-import mineattack.customthings.api.ServerPlayerInfo;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-public class PayButtonBlock extends ButtonBlock implements BlockEntityProvider, CustomBlock {
+public class PayButtonBlock extends ButtonBlock implements BlockEntityProvider, PolymerBlock {
     public PayButtonBlock() {
         super(BlockSetType.GOLD, 30, Blocks.POLISHED_BLACKSTONE_BUTTON.getSettings());
     }
@@ -58,15 +55,7 @@ public class PayButtonBlock extends ButtonBlock implements BlockEntityProvider, 
     }
 
     @Override
-    public Block getVanillaBlock(BlockState state, ServerPlayerEntity player) {
-        return Blocks.POLISHED_BLACKSTONE_BUTTON;
-    }
-
-    @Override
-    public BlockState getVanillaBlockState(BlockState state, ServerPlayerEntity player) {
-        if (player != null && ((ServerPlayerInfo)player).supportCustomThings()) {
-            return state;
-        }
-        return getVanillaBlock(state, player).getStateWithProperties(state);
+    public BlockState getPolymerBlockState(BlockState state) {
+        return Blocks.POLISHED_BLACKSTONE_BUTTON.getStateWithProperties(state);
     }
 }

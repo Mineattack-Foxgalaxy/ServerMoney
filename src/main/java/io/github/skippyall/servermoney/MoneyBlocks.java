@@ -1,15 +1,14 @@
 package io.github.skippyall.servermoney;
 
+import eu.pb4.polymer.core.api.block.PolymerBlockUtils;
+import eu.pb4.polymer.core.api.item.PolymerBlockItem;
 import io.github.skippyall.servermoney.paybutton.PayButtonBlock;
 import io.github.skippyall.servermoney.paybutton.PayButtonBlockEntity;
 import io.github.skippyall.servermoney.shop.block.ShopBarrelBlock;
 import io.github.skippyall.servermoney.shop.block.ShopBarrelBlockEntity;
 import io.github.skippyall.servermoney.shop.block.ShopChestBlock;
 import io.github.skippyall.servermoney.shop.block.ShopChestBlockEntity;
-import mineattack.customthings.api.CustomBlockEntityType;
-import mineattack.customthings.api.CustomBlockItem;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
@@ -20,7 +19,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 public class MoneyBlocks {
-    public static final RegisteredBlock<ShopBarrelBlock, CustomBlockItem, BlockEntityType<ShopBarrelBlockEntity>> SHOP_BARREL = register(
+    public static final RegisteredBlock<ShopBarrelBlock, PolymerBlockItem, BlockEntityType<ShopBarrelBlockEntity>> SHOP_BARREL = register(
             Identifier.of(ServerMoney.MOD_ID, "shop_barrel"),
             new ShopBarrelBlock(),
             new Item.Settings(),
@@ -28,7 +27,7 @@ public class MoneyBlocks {
             ShopBarrelBlockEntity::new
     );
 
-    public static final RegisteredBlock<ShopChestBlock, CustomBlockItem, BlockEntityType<ShopChestBlockEntity>> SHOP_CHEST = register(
+    public static final RegisteredBlock<ShopChestBlock, PolymerBlockItem, BlockEntityType<ShopChestBlockEntity>> SHOP_CHEST = register(
             Identifier.of(ServerMoney.MOD_ID, "shop_chest"),
             new ShopChestBlock(),
             new Item.Settings(),
@@ -36,7 +35,7 @@ public class MoneyBlocks {
             ShopChestBlockEntity::new
     );
 
-    public static final RegisteredBlock<PayButtonBlock, CustomBlockItem, BlockEntityType<PayButtonBlockEntity>> PAY_BUTTON = register(
+    public static final RegisteredBlock<PayButtonBlock, PolymerBlockItem, BlockEntityType<PayButtonBlockEntity>> PAY_BUTTON = register(
             Identifier.of(ServerMoney.MOD_ID, "pay_button"),
             new PayButtonBlock(),
             new Item.Settings(),
@@ -44,19 +43,23 @@ public class MoneyBlocks {
             PayButtonBlockEntity::new
     );
 
-    public static <B extends Block, E extends BlockEntity> RegisteredBlock<B, CustomBlockItem, BlockEntityType<E>> register(Identifier id, B block, Item.Settings itemSettings, Item vanillaItem, BlockEntityType.BlockEntityFactory<E> factory) {
+    public static <B extends Block, E extends BlockEntity> RegisteredBlock<B, PolymerBlockItem, BlockEntityType<E>> register(Identifier id, B block, Item.Settings itemSettings, Item vanillaItem, BlockEntityType.BlockEntityFactory<E> factory) {
+        BlockEntityType<E> blockEntityType = Registry.register(Registries.BLOCK_ENTITY_TYPE, id, BlockEntityType.Builder.create(factory, block).build());
+        PolymerBlockUtils.registerBlockEntity(blockEntityType);
         return register(id, block, itemSettings, vanillaItem).withBlockEntityType(
-                Registry.register(Registries.BLOCK_ENTITY_TYPE, id, CustomBlockEntityType.Builder.create(factory, block).build())
+                blockEntityType
         );
     }
 
-    public static <B extends Block> RegisteredBlock<B, CustomBlockItem, Void> register(Identifier id, B block, Item.Settings itemSettings, Item vanillaItem) {
-        return register(id, block, new CustomBlockItem(block, itemSettings, vanillaItem));
+    public static <B extends Block> RegisteredBlock<B, PolymerBlockItem, Void> register(Identifier id, B block, Item.Settings itemSettings, Item vanillaItem) {
+        return register(id, block, new PolymerBlockItem(block, itemSettings, vanillaItem));
     }
 
     public static <B extends Block, I extends BlockItem, E extends BlockEntity> RegisteredBlock<B, I, BlockEntityType<E>> register(Identifier id, B block, I item, BlockEntityType.BlockEntityFactory<E> factory) {
+        BlockEntityType<E> blockEntityType = Registry.register(Registries.BLOCK_ENTITY_TYPE, id, BlockEntityType.Builder.create(factory, block).build());
+        PolymerBlockUtils.registerBlockEntity(blockEntityType);
         return register(id, block, item).withBlockEntityType(
-                Registry.register(Registries.BLOCK_ENTITY_TYPE, id, CustomBlockEntityType.Builder.create(factory, block).build())
+                blockEntityType
         );
     }
 

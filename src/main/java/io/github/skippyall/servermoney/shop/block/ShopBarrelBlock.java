@@ -24,7 +24,7 @@ public class ShopBarrelBlock extends BarrelBlock implements ShopBlock {
     }
 
     @Override
-    public Block getVanillaBlock(BlockState state, ServerPlayerEntity player) {
+    public Block getVanillaBlock() {
         return Blocks.BARREL;
     }
 

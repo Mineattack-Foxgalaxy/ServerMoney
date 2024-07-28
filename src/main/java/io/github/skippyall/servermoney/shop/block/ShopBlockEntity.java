@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 
 import java.util.UUID;
 
-public interface ShopBlockEntity extends CustomBlockEntity {
+public interface ShopBlockEntity {
     Shop getShop();
 
     Storage<ItemVariant> getStorage();

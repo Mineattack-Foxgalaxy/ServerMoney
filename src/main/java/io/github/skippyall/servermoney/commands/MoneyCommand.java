@@ -13,6 +13,7 @@ import io.github.skippyall.servermoney.input.InputAttachment;
 import io.github.skippyall.servermoney.money.MoneyStorage;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -124,7 +125,7 @@ public class MoneyCommand implements CommandRegistrationCallback {
         if(MoneyStorage.tryPay(sourcePlayer.getUuid(), targetProfile.getId(), transfer)){
             context.getSource().sendFeedback(() -> Text.translatable("servermoney.command.money.pay.sender", targetProfile.getName(), transfer, ServerMoneyConfig.moneySymbol), false);
             if(targetPlayer != null) {
-                targetPlayer.sendMessage(Text.translatable("servermoney.command.money.pay.receiver", targetProfile.getName(), transfer, ServerMoneyConfig.moneySymbol));
+                targetPlayer.sendMessage(Text.translatable("servermoney.command.money.pay.receiver", sourcePlayer.getName(), transfer, ServerMoneyConfig.moneySymbol));
             }
             return 1;
         } else {

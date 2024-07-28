@@ -35,14 +35,13 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    modImplementation("de.foxgalaxy.mineattack:CustomThings:${project.custom_things_version}")
-
     modImplementation "me.lucko:fabric-permissions-api:${project.fabric_permission_api_version}"
     include "me.lucko:fabric-permissions-api:${project.fabric_permission_api_version}"
 
     modImplementation "maven.modrinth:midnightlib:${project.midnightlib_version}"
     include "maven.modrinth:midnightlib:${project.midnightlib_version}"
 
+    modImplementation include("eu.pb4:polymer-core:${project.polymer_version}")
     modImplementation include("xyz.nucleoid:server-translations-api:${project.server_translations_version}")
 }
 

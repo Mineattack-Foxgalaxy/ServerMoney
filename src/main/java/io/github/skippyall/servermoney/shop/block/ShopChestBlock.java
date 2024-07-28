@@ -22,7 +22,7 @@ public class ShopChestBlock extends ChestBlock implements ShopBlock {
     }
 
     @Override
-    public Block getVanillaBlock(BlockState state, ServerPlayerEntity player) {
+    public Block getVanillaBlock() {
         return Blocks.CHEST;
     }
 

@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 
 import java.util.UUID;
 
-public class PayButtonBlockEntity extends BlockEntity implements CustomBlockEntity {
+public class PayButtonBlockEntity extends BlockEntity {
     private UUID owner = null;
     private double amount = 0;
 
