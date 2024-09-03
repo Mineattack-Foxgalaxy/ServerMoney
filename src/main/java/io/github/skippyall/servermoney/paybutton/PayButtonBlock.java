@@ -2,6 +2,7 @@ package io.github.skippyall.servermoney.paybutton;
 
 import eu.pb4.polymer.core.api.block.PolymerBlock;
 import io.github.skippyall.servermoney.input.Input;
+import io.github.skippyall.servermoney.polymer.PolymerUtil;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
@@ -57,5 +58,14 @@ public class PayButtonBlock extends ButtonBlock implements BlockEntityProvider, 
     @Override
     public BlockState getPolymerBlockState(BlockState state) {
         return Blocks.POLISHED_BLACKSTONE_BUTTON.getStateWithProperties(state);
+    }
+
+    @Override
+    public BlockState getPolymerBlockState(BlockState state, ServerPlayerEntity player) {
+        if(PolymerUtil.shouldReplaceItem(player)) {
+            return getPolymerBlockState(state);
+        } else {
+            return state;
+        }
     }
 }

@@ -36,6 +36,7 @@
   "servermoney.shop.owner.amount.current": "Current Amount: %s",
   "servermoney.shop.owner.price.current": "Current Price: %s %s",
   "servermoney.shop.owner.item.current": "Current Item: %s",
+  "servermoney.shop.owner.number_parse_error": "Please enter a number",
 
   "item.servermoney.coin": "Coin",
   "item.servermoney.pay_button": "Pay Button",
@@ -44,5 +45,6 @@
   "block.servermoney.pay_button": "Pay Button",
   "block.servermoney.shop_chest": "Shop Chest",
   "block.servermoney.shop_barrel": "Shop Barrel"
+
 
 }

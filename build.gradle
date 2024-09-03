@@ -41,7 +41,8 @@ dependencies {
     modImplementation "maven.modrinth:midnightlib:${project.midnightlib_version}"
     include "maven.modrinth:midnightlib:${project.midnightlib_version}"
 
-    modImplementation include("eu.pb4:polymer-core:${project.polymer_version}")
+    modImplementation include("eu.pb4:polymer-bundled:${project.polymer_version}")
+    modImplementation include("eu.pb4:sgui:${project.sgui_version}")
     modImplementation include("xyz.nucleoid:server-translations-api:${project.server_translations_version}")
 }
 

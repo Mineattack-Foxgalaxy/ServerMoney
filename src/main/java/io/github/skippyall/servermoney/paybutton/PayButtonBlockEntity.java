@@ -1,8 +1,6 @@
 package io.github.skippyall.servermoney.paybutton;
 
 import io.github.skippyall.servermoney.MoneyBlocks;
-import io.github.skippyall.servermoney.ServerMoney;
-import mineattack.customthings.api.CustomBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;

@@ -1,6 +1,7 @@
 package io.github.skippyall.servermoney.input;
 
 import com.mojang.authlib.GameProfile;
+import eu.pb4.sgui.api.gui.AnvilInputGui;
 import io.github.skippyall.servermoney.MoneyBlocks;
 import io.github.skippyall.servermoney.ServerMoney;
 import io.github.skippyall.servermoney.config.ServerMoneyConfig;
@@ -9,9 +10,12 @@ import io.github.skippyall.servermoney.paybutton.PayButtonBlockEntity;
 import io.github.skippyall.servermoney.shop.block.ShopBlockEntity;
 import io.github.skippyall.servermoney.shop.modification.ShopModification;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.screen.AnvilScreenHandler;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -23,13 +27,45 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class Input {
-    public static void selectPrice(PlayerEntity player, ShopBlockEntity shop) {
-        player.sendMessage(Text.translatable("servermoney.input.price").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify price "))));
+    public static CompletableFuture<String> selectString(ServerPlayerEntity player) {
+        CompletableFuture<String> future = new CompletableFuture<>();
+
+        AnvilInputGui gui = new AnvilInputGui(player, false);
+        gui.setSlot(AnvilScreenHandler.INPUT_1_ID, new ItemStack(Items.PAPER));
+        gui.setSlot(AnvilScreenHandler.OUTPUT_ID, new ItemStack(Items.PAPER), (index, type, action) -> {
+            String out = gui.getInput();
+            future.complete(out);
+        });
+        gui.open();
+        return future;
+    }
+
+    public static void selectPrice(ServerPlayerEntity player, ShopBlockEntity shop) {
+        //player.sendMessage(Text.translatable("servermoney.input.price").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify price "))));
+        selectString(player).thenAccept(string -> {
+            try {
+                double outDouble = Double.parseDouble(string);
+                InputAttachment.hasInputType(player, InputType.PRICE);
+                InputAttachment.getCompletableFuture(player, InputType.PRICE).complete(outDouble);
+            } catch (NumberFormatException e) {
+                player.sendMessage(Text.translatable("servermoney.shop.owner.number_parse_error"));
+            }
+        });
         scheduleInput(InputType.PRICE, player).thenAccept(shop::setPrice);
     }
 
-    public static void selectAmount(PlayerEntity player, ShopBlockEntity shop) {
-        player.sendMessage(Text.translatable("servermoney.input.amount").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify amount "))));
+    public static void selectAmount(ServerPlayerEntity player, ShopBlockEntity shop) {
+        //player.sendMessage(Text.translatable("servermoney.input.amount").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify amount "))));
+        selectString(player).thenAccept(string -> {
+            try {
+                int outInt = Integer.parseInt(string);
+                if(InputAttachment.hasInputType(player, InputType.AMOUNT)) {
+                    InputAttachment.getCompletableFuture(player, InputType.AMOUNT).complete(outInt);
+                }
+            } catch (NumberFormatException e) {
+                player.sendMessage(Text.translatable("servermoney.shop.owner.number_parse_error"));
+            }
+        });
         scheduleInput(InputType.AMOUNT, player).thenAccept(shop::setCount);
     }
 

@@ -1,4 +1,4 @@
-package io.github.skippyall.servermoney.shop;
+package io.github.skippyall.servermoney.shop.screen;
 
 import io.github.skippyall.servermoney.config.ServerMoneyConfig;
 import io.github.skippyall.servermoney.input.Input;
@@ -13,9 +13,9 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.screen.Generic3x3ContainerScreenHandler;
-import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import java.util.List;
@@ -45,7 +45,7 @@ public class OwnerShopScreenHandler extends Generic3x3ContainerScreenHandler {
 
     private void updateIcon() {
         int amount = shop.getCount();
-        if(!(amount == 0)) {
+        if(amount != 0 && !shop.getItem().isBlank()) {
             try (Transaction t = Transaction.openOuter()) {
                 long extracted = storage.extract(shop.getItem(), Long.MAX_VALUE, t);
                 if (extracted / amount >= 5) {
@@ -87,15 +87,16 @@ public class OwnerShopScreenHandler extends Generic3x3ContainerScreenHandler {
     public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player) {
         if(actionType == SlotActionType.PICKUP) {
             if (slotIndex == 4) {
-                if (shop instanceof NamedScreenHandlerFactory factory) {
-                    player.openHandledScreen(factory);
-                }
+                player.openHandledScreen(shop.getInventoryScreen());
             }
             if(slotIndex == 6) {
-                Input.selectPrice(player, shop);
+                Input.selectPrice((ServerPlayerEntity) player, shop);
             }
             if(slotIndex == 7) {
-                Input.selectAmount(player, shop);
+                Input.selectAmount((ServerPlayerEntity) player, shop);
+            }
+            if(slotIndex == 8) {
+                Input.selectItem(player, shop);
             }
         }
     }

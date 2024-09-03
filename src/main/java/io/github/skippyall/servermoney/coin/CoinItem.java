@@ -3,9 +3,8 @@ package io.github.skippyall.servermoney.coin;
 import eu.pb4.polymer.core.api.item.PolymerItem;
 import eu.pb4.polymer.core.api.utils.PolymerClientDecoded;
 import eu.pb4.polymer.core.api.utils.PolymerKeepModel;
-import io.github.skippyall.servermoney.ServerMoney;
 import io.github.skippyall.servermoney.money.MoneyStorage;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import io.github.skippyall.servermoney.polymer.PolymerUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -28,10 +27,10 @@ public class CoinItem extends Item implements PolymerItem, PolymerClientDecoded,
 
     @Override
     public Item getPolymerItem(ItemStack stack, ServerPlayerEntity player) {
-        if(player != null && ServerPlayNetworking.canSend(player, ServerMoney.PACKET_ID)) {
-            return this;
-        } else {
+        if (PolymerUtil.shouldReplaceItem(player)) {
             return Items.GOLD_NUGGET;
+        } else {
+            return stack.getItem();
         }
     }
 

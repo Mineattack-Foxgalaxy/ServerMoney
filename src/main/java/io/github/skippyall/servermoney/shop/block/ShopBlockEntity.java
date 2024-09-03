@@ -1,10 +1,9 @@
 package io.github.skippyall.servermoney.shop.block;
 
 import io.github.skippyall.servermoney.shop.Shop;
-import mineattack.customthings.api.CustomBlockEntity;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.minecraft.item.ItemStack;
+import net.minecraft.screen.NamedScreenHandlerFactory;
 
 import java.util.UUID;
 
@@ -12,6 +11,10 @@ public interface ShopBlockEntity {
     Shop getShop();
 
     Storage<ItemVariant> getStorage();
+
+    default NamedScreenHandlerFactory getInventoryScreen() {
+        return (NamedScreenHandlerFactory) this;
+    }
 
     default UUID getShopOwner() {
         return getShop().getShopOwner();
