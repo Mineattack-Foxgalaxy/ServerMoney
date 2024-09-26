@@ -24,6 +24,22 @@ repositories {
     maven {
         url = 'https://maven.nucleoid.xyz'
     }
+    maven {
+        name "Foxgalaxy Repository"
+        url "https://maven.foxgalaxy.de/private-snapshot"
+        credentials {
+            username = "${maven_user}"
+            password = "${maven_password}"
+        }
+    }
+    maven {
+        name "Foxgalaxy Repository"
+        url "https://maven.foxgalaxy.de/private-releases"
+        credentials {
+            username = "${maven_user}"
+            password = "${maven_password}"
+        }
+    }
 }
 
 dependencies {
@@ -44,6 +60,7 @@ dependencies {
     modImplementation include("eu.pb4:polymer-bundled:${project.polymer_version}")
     modImplementation include("eu.pb4:sgui:${project.sgui_version}")
     modImplementation include("xyz.nucleoid:server-translations-api:${project.server_translations_version}")
+    modImplementation("io.github.skippyall:Minions:${project.minions_version}")
 }
 
 processResources {

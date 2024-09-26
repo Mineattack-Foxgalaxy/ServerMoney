@@ -45,7 +45,7 @@ public class MoneyBlocks {
     );
 
     public static <B extends Block, E extends BlockEntity> RegisteredBlock<B, BetterPolymerBlockItem, BlockEntityType<E>> register(Identifier id, B block, Item.Settings itemSettings, Item vanillaItem, BlockEntityType.BlockEntityFactory<E> factory) {
-        BlockEntityType<E> blockEntityType = Registry.register(Registries.BLOCK_ENTITY_TYPE, id, BlockEntityType.Builder.create(factory, block).build());
+        BlockEntityType<E> blockEntityType = Registry.register(Registries.BLOCK_ENTITY_TYPE, id, BlockEntityType.Builder.create(factory, block).build(null));
         PolymerBlockUtils.registerBlockEntity(blockEntityType);
         return register(id, block, itemSettings, vanillaItem).withBlockEntityType(
                 blockEntityType
@@ -57,7 +57,7 @@ public class MoneyBlocks {
     }
 
     public static <B extends Block, I extends BlockItem, E extends BlockEntity> RegisteredBlock<B, I, BlockEntityType<E>> register(Identifier id, B block, I item, BlockEntityType.BlockEntityFactory<E> factory) {
-        BlockEntityType<E> blockEntityType = Registry.register(Registries.BLOCK_ENTITY_TYPE, id, BlockEntityType.Builder.create(factory, block).build());
+        BlockEntityType<E> blockEntityType = Registry.register(Registries.BLOCK_ENTITY_TYPE, id, BlockEntityType.Builder.create(factory, block).build(null));
         PolymerBlockUtils.registerBlockEntity(blockEntityType);
         return register(id, block, item).withBlockEntityType(
                 blockEntityType

@@ -99,15 +99,17 @@ public class MoneyCommand implements CommandRegistrationCallback {
 
     public static int query(CommandContext<ServerCommandSource> context) throws CommandSyntaxException{
         ServerPlayerEntity targetPlayer = context.getSource().getPlayerOrThrow();
-        String money = String.format("%.2f", MoneyStorage.getMoney(targetPlayer));
-        context.getSource().sendFeedback(() -> Text.translatable("servermoney.command.money.query", money, ServerMoneyConfig.moneySymbol),false);
+        double money = MoneyStorage.getMoney(targetPlayer);
+        String formatted = String.format("%.2f", money);
+        context.getSource().sendFeedback(() -> Text.translatable("servermoney.command.money.query", formatted, ServerMoneyConfig.moneySymbol),false);
         return (int) money;
     }
 
     public static int queryPlayer(CommandContext<ServerCommandSource> context) throws CommandSyntaxException{
         GameProfile targetPlayer = GameProfileArgumentType.getProfileArgument(context, "player").iterator().next();
-        String money = String.format("%.2f", MoneyStorage.getMoney(targetPlayer.getId()));
-        context.getSource().sendFeedback(() -> Text.translatable("servermoney.command.money.query.others", targetPlayer.getName(), money, ServerMoneyConfig.moneySymbol), false);
+        double money = MoneyStorage.getMoney(targetPlayer.getId());
+        String formatted = String.format("%.2f", money);
+        context.getSource().sendFeedback(() -> Text.translatable("servermoney.command.money.query.others", targetPlayer.getName(), formatted, ServerMoneyConfig.moneySymbol), false);
         return (int) money;
     }
 

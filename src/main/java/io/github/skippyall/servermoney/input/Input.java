@@ -27,22 +27,23 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class Input {
-    public static CompletableFuture<String> selectString(ServerPlayerEntity player) {
+    public static CompletableFuture<String> selectString(ServerPlayerEntity player, Text title, String defaultInput) {
         CompletableFuture<String> future = new CompletableFuture<>();
 
         AnvilInputGui gui = new AnvilInputGui(player, false);
-        gui.setSlot(AnvilScreenHandler.INPUT_1_ID, new ItemStack(Items.PAPER));
-        gui.setSlot(AnvilScreenHandler.OUTPUT_ID, new ItemStack(Items.PAPER), (index, type, action) -> {
+        gui.setSlot(AnvilScreenHandler.OUTPUT_ID, new ItemStack(Items.EMERALD_BLOCK), (index, type, action) -> {
             String out = gui.getInput();
             future.complete(out);
         });
+        gui.setTitle(title);
+        gui.setDefaultInputValue(defaultInput);
         gui.open();
         return future;
     }
 
     public static void selectPrice(ServerPlayerEntity player, ShopBlockEntity shop) {
         //player.sendMessage(Text.translatable("servermoney.input.price").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify price "))));
-        selectString(player).thenAccept(string -> {
+        selectString(player, Text.translatable("servermoney.shop.owner.price.input"), String.valueOf(shop.getPrice())).thenAccept(string -> {
             try {
                 double outDouble = Double.parseDouble(string);
                 InputAttachment.hasInputType(player, InputType.PRICE);
@@ -56,7 +57,7 @@ public class Input {
 
     public static void selectAmount(ServerPlayerEntity player, ShopBlockEntity shop) {
         //player.sendMessage(Text.translatable("servermoney.input.amount").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify amount "))));
-        selectString(player).thenAccept(string -> {
+        selectString(player, Text.translatable("servermoney.shop.owner.amount.input"), String.valueOf(shop.getCount())).thenAccept(string -> {
             try {
                 int outInt = Integer.parseInt(string);
                 if(InputAttachment.hasInputType(player, InputType.AMOUNT)) {

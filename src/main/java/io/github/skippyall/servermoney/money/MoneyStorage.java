@@ -1,6 +1,7 @@
 package io.github.skippyall.servermoney.money;
 
 import io.github.skippyall.servermoney.ServerMoney;
+import io.github.skippyall.servermoney.compat.minions.MinionsCompat;
 import io.github.skippyall.servermoney.config.ServerMoneyConfig;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -28,7 +29,11 @@ public class MoneyStorage extends PersistentState {
     }
 
     public static double getMoney(UUID id){
-        return moneymap.containsKey(id) ? moneymap.get(id) : ServerMoneyConfig.initialMoney;
+        return moneymap.containsKey(id) ? moneymap.get(id) : getInitialMoney(id);
+    }
+
+    public static double getInitialMoney(UUID id) {
+        return MinionsCompat.isMinion(id) ? 0 : ServerMoneyConfig.initialMoney;
     }
 
     public static void setMoney(PlayerEntity player, double money){

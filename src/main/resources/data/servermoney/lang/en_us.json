@@ -36,6 +36,8 @@
   "servermoney.shop.owner.amount.current": "Current Amount: %s",
   "servermoney.shop.owner.price.current": "Current Price: %s %s",
   "servermoney.shop.owner.item.current": "Current Item: %s",
+  "servermoney.shop.owner.price.input": "Enter the new price",
+  "servermoney.shop.owner.amount.input": "Enter the new amount ",
   "servermoney.shop.owner.number_parse_error": "Please enter a number",
 
   "item.servermoney.coin": "Coin",
