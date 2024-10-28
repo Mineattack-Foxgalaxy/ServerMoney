@@ -14,10 +14,11 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
+import xyz.nucleoid.packettweaker.PacketContext;
 
 public class PayButtonBlock extends ButtonBlock implements BlockEntityProvider, PolymerBlock {
-    public PayButtonBlock() {
-        super(BlockSetType.GOLD, 30, Blocks.POLISHED_BLACKSTONE_BUTTON.getSettings());
+    public PayButtonBlock(Settings settings) {
+        super(BlockSetType.GOLD, 30, settings);
     }
 
     @Nullable
@@ -32,7 +33,7 @@ public class PayButtonBlock extends ButtonBlock implements BlockEntityProvider, 
             if(!world.isClient() && world.getBlockEntity(pos) instanceof PayButtonBlockEntity pbbe) {
                 Input.confirmPayButton(player, pbbe.getOwner(), pbbe.getAmount(), pos, world);
             }
-            return ActionResult.success(world.isClient());
+            return ActionResult.SUCCESS;
         }
         return ActionResult.CONSUME;
     }
@@ -56,14 +57,9 @@ public class PayButtonBlock extends ButtonBlock implements BlockEntityProvider, 
     }
 
     @Override
-    public BlockState getPolymerBlockState(BlockState state) {
-        return Blocks.POLISHED_BLACKSTONE_BUTTON.getStateWithProperties(state);
-    }
-
-    @Override
-    public BlockState getPolymerBlockState(BlockState state, ServerPlayerEntity player) {
-        if(PolymerUtil.shouldReplaceItem(player)) {
-            return getPolymerBlockState(state);
+    public BlockState getPolymerBlockState(BlockState state, PacketContext context) {
+        if(PolymerUtil.shouldReplace(context.getPlayer())) {
+            return Blocks.POLISHED_BLACKSTONE_BUTTON.getStateWithProperties(state);
         } else {
             return state;
         }

@@ -1,12 +1,8 @@
 {
   "type":"minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "minecraft:gold_ingot"
-    },
-    {
-      "tag": "minecraft:buttons"
-    }
+    "minecraft:gold_ingot",
+    "#minecraft:buttons"
   ],
   "result": {
     "id": "servermoney:shop_barrel"

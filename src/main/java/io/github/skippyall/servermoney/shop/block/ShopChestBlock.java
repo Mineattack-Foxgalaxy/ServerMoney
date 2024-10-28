@@ -7,6 +7,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -17,8 +18,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.BiConsumer;
 
 public class ShopChestBlock extends ChestBlock implements ShopBlock {
-    public ShopChestBlock() {
-        super(Blocks.CHEST.getSettings(), () -> MoneyBlocks.SHOP_CHEST.blockEntityType());
+    public ShopChestBlock(Settings settings) {
+        super(() -> MoneyBlocks.SHOP_CHEST.blockEntityType(), settings);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class ShopChestBlock extends ChestBlock implements ShopBlock {
     }
 
     @Override
-    public void onExploded(BlockState state, World world, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> stackMerger) {
+    public void onExploded(BlockState state, ServerWorld world, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> stackMerger) {
         if(shouldExplode(state, world, pos)) {
             super.onExploded(state, world, pos, explosion, stackMerger);
         }

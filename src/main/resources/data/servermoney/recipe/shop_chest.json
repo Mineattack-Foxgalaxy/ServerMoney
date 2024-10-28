@@ -7,13 +7,13 @@
   ],
   "key": {
     "H": {
-      "item": "minecraft:hopper"
+      "id": "minecraft:hopper"
     },
     "C": {
-      "item":"minecraft:chest"
+      "id":"minecraft:chest"
     },
     "D": {
-      "item":"minecraft:dropper"
+      "id":"minecraft:dropper"
     }
   },
   "result": {

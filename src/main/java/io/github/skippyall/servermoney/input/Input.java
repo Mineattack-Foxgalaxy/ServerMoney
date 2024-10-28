@@ -71,7 +71,7 @@ public class Input {
     }
 
     public static void selectItem(PlayerEntity player, ShopBlockEntity shop) {
-        player.sendMessage(Text.translatable("servermoney.input.item").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify item"))));
+        player.sendMessage(Text.translatable("servermoney.input.item").setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/shop modify item"))), false);
         scheduleInput(InputType.ITEM, player).thenAccept(shop::setItem);
     }
 
@@ -101,7 +101,7 @@ public class Input {
         if(profile.isPresent()) {
             name = profile.get().getName();
         }
-        sender.sendMessage(Text.translatable("servermoney.input.paybutton.confirm", name, amount, ServerMoneyConfig.moneySymbol).setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/money confirm"))));
+        sender.sendMessage(Text.translatable("servermoney.input.paybutton.confirm", name, amount, ServerMoneyConfig.moneySymbol).setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/money confirm"))), false);
         long start = System.currentTimeMillis();
         scheduleInput(InputType.CONFIRM_PAY, sender).thenAccept((v) -> {
             if (System.currentTimeMillis() < start + 10000 && world.getBlockEntity(pos) instanceof PayButtonBlockEntity pbbe) {

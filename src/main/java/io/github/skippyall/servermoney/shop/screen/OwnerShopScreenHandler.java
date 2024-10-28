@@ -38,7 +38,7 @@ public class OwnerShopScreenHandler extends Generic3x3ContainerScreenHandler {
         viewer.openHandledScreen(
                 new SimpleNamedScreenHandlerFactory(
                         (syncid, playerInventory, player2) -> new OwnerShopScreenHandler(syncid, playerInventory, player2, shop),
-                        Text.literal("")
+                        Text.translatable("servermoney.shop.owner.title")
                 )
         );
     }

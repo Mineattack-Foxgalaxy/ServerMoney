@@ -11,6 +11,7 @@
   "license": "MIT",
   "icon": "assets/servermoneyfabric/icon.png",
   "environment": "*",
+  "accessWidener" : "modid.accesswidener",
   "entrypoints": {
     "main": [
       "io.github.skippyall.servermoney.ServerMoney"

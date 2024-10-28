@@ -19,6 +19,7 @@ public class ShopChestBlockEntity extends ChestBlockEntity implements InventoryS
 
     public ShopChestBlockEntity(BlockPos pos, BlockState state) {
         super(pos, state);
+        type = MoneyBlocks.SHOP_CHEST.blockEntityType();
     }
 
     @Override
@@ -34,6 +35,11 @@ public class ShopChestBlockEntity extends ChestBlockEntity implements InventoryS
     @Override
     public BlockEntityType<?> getType() {
         return MoneyBlocks.SHOP_CHEST.blockEntityType();
+    }
+
+    @Override
+    public boolean supports(BlockState state) {
+        return MoneyBlocks.SHOP_CHEST.blockEntityType().supports(state);
     }
 
     @Override

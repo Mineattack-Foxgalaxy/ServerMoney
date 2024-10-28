@@ -7,7 +7,6 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BarrelBlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.math.BlockPos;
@@ -18,6 +17,7 @@ public class ShopBarrelBlockEntity extends BarrelBlockEntity implements Inventor
 
     public ShopBarrelBlockEntity(BlockPos pos, BlockState state) {
         super(pos, state);
+        type = MoneyBlocks.SHOP_BARREL.blockEntityType();
     }
 
     @Override
@@ -28,11 +28,6 @@ public class ShopBarrelBlockEntity extends BarrelBlockEntity implements Inventor
     @Override
     public Storage<ItemVariant> getStorage() {
         return storage;
-    }
-
-    @Override
-    public BlockEntityType<?> getType() {
-        return MoneyBlocks.SHOP_BARREL.blockEntityType();
     }
 
     @Override

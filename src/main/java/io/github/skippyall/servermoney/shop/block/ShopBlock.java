@@ -5,6 +5,7 @@ import io.github.skippyall.servermoney.ServerMoney;
 import io.github.skippyall.servermoney.config.ServerMoneyConfig;
 import io.github.skippyall.servermoney.input.Input;
 import io.github.skippyall.servermoney.input.InputAttachment;
+import io.github.skippyall.servermoney.polymer.PolymerUtil;
 import io.github.skippyall.servermoney.shop.ShopResendCallback;
 import io.github.skippyall.servermoney.shop.screen.NewOwnerShopScreen;
 import io.github.skippyall.servermoney.shop.screen.ShopScreenHandler;
@@ -27,6 +28,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.timer.Timer;
 import org.jetbrains.annotations.Nullable;
+import xyz.nucleoid.packettweaker.PacketContext;
 
 public interface ShopBlock extends PolymerBlock {
     default ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
@@ -39,7 +41,7 @@ public interface ShopBlock extends PolymerBlock {
                 modificationComponent.getCompletableFuture(Input.InputType.SHOP).complete(shop);
                 InputAttachment.removeScheduledInput(player);
 
-                player.sendMessage(Text.literal("Successfully selected shop."));
+                player.sendMessage(Text.literal("Successfully selected shop."), false);
 
                 return ActionResult.SUCCESS;
             }
@@ -82,14 +84,9 @@ public interface ShopBlock extends PolymerBlock {
     Block getVanillaBlock();
 
     @Override
-    default BlockState getPolymerBlockState(BlockState state) {
-        return getVanillaBlock().getStateWithProperties(state);
-    }
-
-    @Override
-    default BlockState getPolymerBlockState(BlockState state, ServerPlayerEntity player) {
-        if(!ServerPlayNetworking.canSend(player, ServerMoney.PACKET_ID)) {
-            return getPolymerBlockState(state);
+    default BlockState getPolymerBlockState(BlockState state, PacketContext context) {
+        if(PolymerUtil.shouldReplace(context.getPlayer())) {
+            return getVanillaBlock().getDefaultState();
         } else {
             return state;
         }
