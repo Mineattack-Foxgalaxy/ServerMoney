@@ -1,21 +1,21 @@
 package io.github.skippyall.servermoney.shop.block;
 
 import net.minecraft.block.BarrelBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.state.property.Property;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import org.jetbrains.annotations.Nullable;
+import xyz.nucleoid.packettweaker.PacketContext;
 
 import java.util.function.BiConsumer;
 
@@ -25,8 +25,8 @@ public class ShopBarrelBlock extends BarrelBlock implements ShopBlock {
     }
 
     @Override
-    public Block getVanillaBlock() {
-        return Blocks.BARREL;
+    public BlockState getVanillaBlockState(BlockState state) {
+        return Blocks.BARREL.getStateWithProperties(state);
     }
 
     @Nullable

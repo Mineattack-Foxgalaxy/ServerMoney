@@ -21,6 +21,11 @@ public class ShopBarrelBlockEntity extends BarrelBlockEntity implements Inventor
     }
 
     @Override
+    public boolean supports(BlockState state) {
+        return MoneyBlocks.SHOP_BARREL.blockEntityType().supports(state);
+    }
+
+    @Override
     public Shop getShop() {
         return shop;
     }

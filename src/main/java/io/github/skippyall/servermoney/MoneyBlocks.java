@@ -4,17 +4,14 @@ import eu.pb4.polymer.core.api.block.PolymerBlockUtils;
 import eu.pb4.polymer.core.api.item.PolymerBlockItem;
 import io.github.skippyall.servermoney.paybutton.PayButtonBlock;
 import io.github.skippyall.servermoney.paybutton.PayButtonBlockEntity;
-import io.github.skippyall.servermoney.polymer.BetterPolymerBlockItem;
 import io.github.skippyall.servermoney.shop.block.ShopBarrelBlock;
 import io.github.skippyall.servermoney.shop.block.ShopBarrelBlockEntity;
 import io.github.skippyall.servermoney.shop.block.ShopChestBlock;
 import io.github.skippyall.servermoney.shop.block.ShopChestBlockEntity;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityType;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BarrelBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
@@ -29,7 +26,7 @@ import net.minecraft.util.Identifier;
 import java.util.function.Function;
 
 public class MoneyBlocks {
-    public static final RegisteredBlock<ShopBarrelBlock, BetterPolymerBlockItem, BlockEntityType<ShopBarrelBlockEntity>> SHOP_BARREL = register(
+    public static final RegisteredBlock<ShopBarrelBlock, PolymerBlockItem, BlockEntityType<ShopBarrelBlockEntity>> SHOP_BARREL = register(
             Identifier.of(ServerMoney.MOD_ID, "shop_barrel"),
             ShopBarrelBlock::new,
             AbstractBlock.Settings.copy(Blocks.BARREL),
@@ -38,7 +35,7 @@ public class MoneyBlocks {
             ShopBarrelBlockEntity::new
     );
 
-    public static final RegisteredBlock<ShopChestBlock, BetterPolymerBlockItem, BlockEntityType<ShopChestBlockEntity>> SHOP_CHEST = register(
+    public static final RegisteredBlock<ShopChestBlock, PolymerBlockItem, BlockEntityType<ShopChestBlockEntity>> SHOP_CHEST = register(
             Identifier.of(ServerMoney.MOD_ID, "shop_chest"),
             ShopChestBlock::new,
             AbstractBlock.Settings.copy(Blocks.CHEST),
@@ -47,7 +44,7 @@ public class MoneyBlocks {
             ShopChestBlockEntity::new
     );
 
-    public static final RegisteredBlock<PayButtonBlock, BetterPolymerBlockItem, BlockEntityType<PayButtonBlockEntity>> PAY_BUTTON = register(
+    public static final RegisteredBlock<PayButtonBlock, PolymerBlockItem, BlockEntityType<PayButtonBlockEntity>> PAY_BUTTON = register(
             Identifier.of(ServerMoney.MOD_ID, "pay_button"),
             PayButtonBlock::new,
             AbstractBlock.Settings.copy(Blocks.POLISHED_BLACKSTONE_BUTTON),
@@ -56,18 +53,17 @@ public class MoneyBlocks {
             PayButtonBlockEntity::new
     );
 
-    public static <B extends Block, E extends BlockEntity> RegisteredBlock<B, BetterPolymerBlockItem, BlockEntityType<E>> register(Identifier id, Function<AbstractBlock.Settings, B> blockFactory, AbstractBlock.Settings settings, Item.Settings itemSettings, Item vanillaItem, FabricBlockEntityTypeBuilder.Factory<E> factory) {
+    public static <B extends Block, E extends BlockEntity> RegisteredBlock<B, PolymerBlockItem, BlockEntityType<E>> register(Identifier id, Function<AbstractBlock.Settings, B> blockFactory, AbstractBlock.Settings settings, Item.Settings itemSettings, Item vanillaItem, FabricBlockEntityTypeBuilder.Factory<E> factory) {
         B block = blockFactory.apply(settings.registryKey(RegistryKey.of(RegistryKeys.BLOCK, id)));
         BlockEntityType<E> blockEntityType = Registry.register(Registries.BLOCK_ENTITY_TYPE, id, FabricBlockEntityTypeBuilder.create(factory, block).build());
-        System.out.println("test" + blockEntityType.supports(block.getDefaultState()));
         PolymerBlockUtils.registerBlockEntity(blockEntityType);
         return register(id, block, itemSettings, vanillaItem).withBlockEntityType(
                 blockEntityType
         );
     }
 
-    public static <B extends Block> RegisteredBlock<B, BetterPolymerBlockItem, Void> register(Identifier id, B block, Item.Settings itemSettings, Item vanillaItem) {
-        return register(id, block, new BetterPolymerBlockItem(block, itemSettings.registryKey(RegistryKey.of(RegistryKeys.ITEM, id)), vanillaItem));
+    public static <B extends Block> RegisteredBlock<B, PolymerBlockItem, Void> register(Identifier id, B block, Item.Settings itemSettings, Item vanillaItem) {
+        return register(id, block, new PolymerBlockItem(block, itemSettings.registryKey(RegistryKey.of(RegistryKeys.ITEM, id)), vanillaItem));
     }
 
     public static <B extends Block, I extends BlockItem, E extends BlockEntity> RegisteredBlock<B, I, BlockEntityType<E>> register(Identifier id, B block, I item, FabricBlockEntityTypeBuilder.Factory<E> factory) {

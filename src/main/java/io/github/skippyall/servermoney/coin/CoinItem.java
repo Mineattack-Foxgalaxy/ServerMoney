@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import xyz.nucleoid.packettweaker.PacketContext;
 
-public class CoinItem extends Item implements PolymerItem, PolymerClientDecoded, PolymerKeepModel {
+public class CoinItem extends Item implements PolymerItem {
     public CoinItem(Settings settings) {
         super(settings);
     }

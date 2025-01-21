@@ -18,8 +18,7 @@ public class ShopChestBlockEntity extends ChestBlockEntity implements InventoryS
     private final InventoryStorage storage = InventoryStorage.of(this, null);
 
     public ShopChestBlockEntity(BlockPos pos, BlockState state) {
-        super(pos, state);
-        type = MoneyBlocks.SHOP_CHEST.blockEntityType();
+        super(MoneyBlocks.SHOP_CHEST.blockEntityType(), pos, state);
     }
 
     @Override

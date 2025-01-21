@@ -21,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
@@ -63,8 +64,8 @@ public interface ShopBlock extends PolymerBlock {
     default boolean shouldExplode(BlockState state, World world, BlockPos pos) {
         if(ServerMoneyConfig.protectShops) {
             if (state.getBlock() instanceof ShopBlock) {
-                if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
-                    Timer<MinecraftServer> timer = world.getServer().getSaveProperties().getMainWorldProperties().getScheduledEvents();
+                if (world instanceof ServerWorld serverWorld) {
+                    Timer<MinecraftServer> timer = serverWorld.getServer().getSaveProperties().getMainWorldProperties().getScheduledEvents();
                     timer.setEvent("shopresend_" + ShopResendCallback.counter, world.getTime()+ 20, new ShopResendCallback(state, pos, world.getRegistryKey()));
                     ShopResendCallback.counter++;
                 }
@@ -81,12 +82,12 @@ public interface ShopBlock extends PolymerBlock {
         }
     }
 
-    Block getVanillaBlock();
+    BlockState getVanillaBlockState(BlockState state);
 
     @Override
     default BlockState getPolymerBlockState(BlockState state, PacketContext context) {
         if(PolymerUtil.shouldReplace(context.getPlayer())) {
-            return getVanillaBlock().getDefaultState();
+            return getVanillaBlockState(state);
         } else {
             return state;
         }

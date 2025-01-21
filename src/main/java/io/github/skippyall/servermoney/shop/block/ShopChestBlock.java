@@ -6,7 +6,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.BlockHitResult;
@@ -23,8 +22,8 @@ public class ShopChestBlock extends ChestBlock implements ShopBlock {
     }
 
     @Override
-    public Block getVanillaBlock() {
-        return Blocks.CHEST;
+    public BlockState getVanillaBlockState(BlockState state) {
+        return Blocks.CHEST.getStateWithProperties(state);
     }
 
     @Nullable
